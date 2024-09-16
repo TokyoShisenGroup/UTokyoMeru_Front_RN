@@ -1,10 +1,10 @@
 import React from 'react';
 import GoodsCard from '@/components/homepage/GoodsCard';
 import ISearchBar from '@/components/homepage/ISearchBar';
-import {GoodProps} from '@/types';
+import {GoodPropsSimplified} from '@/types';
 import { SafeAreaView } from 'react-native';
 
-const items: GoodProps[] = [
+const items: GoodPropsSimplified[] = [
   {
     id: '1',
     name: 'test',
@@ -93,45 +93,6 @@ const items: GoodProps[] = [
   },
   {
     id: '8',
-    name: 'test4',
-    image:
-      'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
-    price: 200,
-    description:
-      'This is a test description4qweqweq  r erwuheiuwgcrhlewcghjkbkjnhbkhbjghjbgvfhggjhbvgfhjhbgvfhhjgb',
-    user: {
-      name: 'brynn',
-      avatar: 'https://uifaces.co/our-content/donated/1H_7AxP0.jpg',
-    },
-  },
-  {
-    id: '9',
-    name: 'test4',
-    image:
-      'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
-    price: 200,
-    description:
-      'This is a test description4qweqweq  r erwuheiuwgcrhlewcghjkbkjnhbkhbjghjbgvfhggjhbvgfhjhbgvfhhjgb',
-    user: {
-      name: 'brynn',
-      avatar: 'https://uifaces.co/our-content/donated/1H_7AxP0.jpg',
-    },
-  },
-  {
-    id: '10',
-    name: 'test4',
-    image:
-      'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
-    price: 200,
-    description:
-      'This is a test description4qweqweq  r erwuheiuwgcrhlewcghjkbkjnhbkhbjghjbgvfhggjhbvgfhjhbgvfhhjgb',
-    user: {
-      name: 'brynn',
-      avatar: 'https://uifaces.co/our-content/donated/1H_7AxP0.jpg',
-    },
-  },
-  {
-    id: '11',
     name: 'test4',
     image:
       'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',

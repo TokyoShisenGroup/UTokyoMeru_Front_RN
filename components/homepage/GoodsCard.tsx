@@ -7,12 +7,12 @@ import {
   Image,
 } from 'react-native';
 import {Text, Card} from '@rneui/themed';
-import {GoodProps, ImageProps, ColumnProps} from '../../types';
+import {ImageProps, ColumnProps, GoodPropsSimplified} from '../../types';
 import {router} from 'expo-router'
  
-const splitDataIntoColumns = (data: GoodProps[]) => {
-  const leftColumn: GoodProps[] = [];
-  const rightColumn: GoodProps[] = [];
+const splitDataIntoColumns = (data: GoodPropsSimplified[]) => {
+  const leftColumn: GoodPropsSimplified[] = [];
+  const rightColumn: GoodPropsSimplified[] = [];
 
   data.forEach((item, index) => {
     if (index % 2 === 0) {
