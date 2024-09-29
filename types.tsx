@@ -5,7 +5,7 @@ export interface GoodProps {
     images: string[];
     price: number;
     description: string;
-    user: UserDisplayProps;
+    user: UserProps;
     tags: string[];
 }
 
@@ -29,4 +29,18 @@ export interface ColumnProps {
 export interface UserDisplayProps {
     name: string;
     avatar: string;
+}
+
+export interface UserProps {
+    id: string;
+    name: string;
+    avatar: string;
+    rating: number;
+}
+
+export interface TagProps {
+  text: string;
+  color?: string;
+  backgroundColor?: string;
+  onPress?: () => void;
 }

@@ -5,8 +5,7 @@ import { Avatar } from '@rneui/themed';
 
 const LoginPanel = ()=>{
 
-  return <>  // Standard Avatar
-</>
+  return 0
 
 
 }
