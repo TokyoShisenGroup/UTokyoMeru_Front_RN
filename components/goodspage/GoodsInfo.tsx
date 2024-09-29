@@ -10,8 +10,6 @@ const GoodsInfo: React.FC<GoodProps> = (props) => {
             <Text style={styles.description}>{props.description}</Text>
             <Text>{props.tags.join(', ')}</Text>
             <Text>UserInfo</Text>
-            <Button title="想要" />
-            <Button title="购入" />
         </View>
     )
 }

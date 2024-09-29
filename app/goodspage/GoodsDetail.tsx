@@ -3,6 +3,7 @@ import React from 'react';
 
 import GoodsSlides from '@/components/goodspage/GoodsSlides';
 import GoodsInfo from '@/components/goodspage/GoodsInfo';
+import Footer from '@/components/goodspage/Footer';
 import { GoodProps } from '@/types';
 import { useLocalSearchParams } from 'expo-router';
 import Header from '@/components/goodspage/Header';
@@ -27,15 +28,20 @@ const GoodsDetail = () => {
     // todo: 根据id获取商品信息
     return (
         <> 
-            <SafeAreaView>
+            <SafeAreaView style={styles.container}>
             <Header title={items.title} />
             <GoodsSlides {...items} />
             <GoodsInfo {...items} />
+            <Footer />
             </SafeAreaView>
         </>
     )
 }
 
-
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    }
+})
 
 export default GoodsDetail
