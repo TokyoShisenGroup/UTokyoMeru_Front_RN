@@ -49,9 +49,12 @@ const Column: React.FC<ColumnProps> = ({data}) => {
       renderItem={({item}) => (
         <View key={item.id} style={styles.cardContainer}>
           <TouchableOpacity onPress={() => {
-              console.log("Pressed cards")
-              router.push("/GoodsDetail")
-              }}>
+              console.log("Pressed card with id:", item.id);
+              router.push({
+                pathname: "/goodspage/GoodsDetail",
+                params: { id: item.id }
+              });
+            }}>
             <Card containerStyle={styles.card}>
               <DynamicImage uri={item.image} />
               <Text style={styles.description} numberOfLines={3}>

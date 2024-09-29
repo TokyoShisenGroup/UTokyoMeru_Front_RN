@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native';
 const items: GoodPropsSimplified[] = [
   {
     id: '1',
-    name: 'test',
+    title: 'test',
     image: 'https://pic1.zhimg.com/v2-119565438456235a942996a574800eb8_b.jpg',
     price: 9999999.12,
     description:
@@ -20,7 +20,7 @@ const items: GoodPropsSimplified[] = [
   },
   {
     id: '2',
-    name: 'test2',
+    title: 'test2',
     image: 'https://picx.zhimg.com/v2-0bdd648c59f9ab3fb91c54933f7b0c21_b.jpg',
     price: 1,
     description: 'This is a test description2',
@@ -31,7 +31,7 @@ const items: GoodPropsSimplified[] = [
   },
   {
     id: '3',
-    name: 'test3',
+    title: 'test3',
     image: 'https://pic4.zhimg.com/v2-21ac80bdc1a514bd4cd56e880cc55d79_b.jpg',
     price: 100,
     description: 'This is a test description3',
@@ -42,7 +42,7 @@ const items: GoodPropsSimplified[] = [
   },
   {
     id: '4',
-    name: 'test4',
+    title: 'test4',
     image:
       'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
     price: 200,
@@ -54,7 +54,7 @@ const items: GoodPropsSimplified[] = [
   },
   {
     id: '5',
-    name: 'test4',
+    title: 'test4',
     image:
       'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
     price: 200,
@@ -67,7 +67,7 @@ const items: GoodPropsSimplified[] = [
   },
   {
     id: '6',
-    name: 'test4',
+    title: 'test4',
     image:
       'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
     price: 200,
@@ -80,7 +80,7 @@ const items: GoodPropsSimplified[] = [
   },
   {
     id: '7',
-    name: 'test4',
+    title: 'test4',
     image:
       'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
     price: 200,
@@ -93,7 +93,7 @@ const items: GoodPropsSimplified[] = [
   },
   {
     id: '8',
-    name: 'test4',
+    title: 'test4',
     image:
       'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
     price: 200,
