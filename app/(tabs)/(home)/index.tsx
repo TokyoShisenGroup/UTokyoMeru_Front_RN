@@ -1,5 +1,5 @@
 import React from 'react';
-import GoodsCard from '@/components/homepage/GoodsCard';
+import GoodsList from '@/components/homepage/GoodsList';
 import ISearchBar from '@/components/homepage/ISearchBar';
 import {GoodPropsSimplified} from '@/types';
 import { SafeAreaView } from 'react-native';
@@ -110,7 +110,7 @@ function HomeScreen() {
   return (
     <SafeAreaView>
       <ISearchBar onSearch={()=>{console.log("Hello")}}/>
-      <GoodsCard data={items} />
+      <GoodsList data={items} />
     </SafeAreaView>
   );
 }

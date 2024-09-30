@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const Footer: React.FC = () => {
   return (
@@ -17,13 +18,13 @@ const Footer: React.FC = () => {
 const styles = StyleSheet.create({
   footer: {
     position: 'absolute',
-    marginBottom: 20,
+    paddingBottom: hp(2),
     bottom: 0,
     left: 0,
     right: 0,
     backgroundColor: 'white',
     flexDirection: 'row',
-    height: 60,
+    height: hp(9),
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {
     flex: 1,
-    height: 40,
+    height: hp(5),
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
   },
   buyButton: {
     flex: 1,
-    height: 40,
+    height: hp(5),
     backgroundColor: 'red',
     justifyContent: 'center',
     alignItems: 'center',

@@ -2,7 +2,7 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import {GoodProps} from '@/types';
 import UserCard from '@/components/goodspage/UserCard';
 import Tag from '@/components/goodspage/Tag';
-
+import ButtonSheets from '@/components/goodspage/ButtonSheets';
 const GoodsInfo: React.FC<GoodProps> = (props) => {
     return (
         <View style={styles.container}>
@@ -10,9 +10,13 @@ const GoodsInfo: React.FC<GoodProps> = (props) => {
             <View style={styles.priceContainer}>
                 <Text style={styles.currencySymbol}>¥</Text>
                 <Text style={styles.price}>{props.price}</Text>
+                <Text style={styles.lastUpdate}>最后更新：1分前</Text>
             </View>
-            <Text style={styles.descriptionTitle}>商品详情</Text>
-            <Text style={styles.description}>{props.description}</Text>
+            <ButtonSheets />
+            <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>商品详情</Text>
+                <Text style={styles.description}>{props.description}</Text>
+            </View>
             <View style={styles.tagsContainer}>
                 {props.tags.map((tag, index) => (
                     <Tag 
@@ -48,6 +52,19 @@ const styles = StyleSheet.create({
     },
     price: {
         fontSize: 32,
+    },
+    lastUpdate: {
+        fontSize: 10,
+        color: 'grey',
+        marginTop: 20,
+        marginLeft: 10,
+    },
+    descriptionContainer: {
+        paddingTop: 10,
+        marginBottom: 10,
+        borderTopWidth: 1,
+        borderColor: '#E0E0E0',
+        borderRadius: 10,
     },
     descriptionTitle: {
         fontSize: 20,
