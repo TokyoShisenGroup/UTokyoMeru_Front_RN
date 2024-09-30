@@ -2,7 +2,9 @@ import React from 'react';
 import GoodsList from '@/components/homepage/GoodsList';
 import ISearchBar from '@/components/homepage/ISearchBar';
 import {GoodPropsSimplified} from '@/types';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, Text } from 'react-native';
+import { useState, useEffect } from 'react';
+import { getGoodsOfHomePage } from '@/api/GoodsApi';
 
 const items: GoodPropsSimplified[] = [
   {
@@ -107,6 +109,18 @@ const items: GoodPropsSimplified[] = [
 ];
 
 function HomeScreen() {
+  const [goods, setGoods] = useState<GoodPropsSimplified[] | undefined>(undefined);
+  useEffect(() => {
+    getGoodsOfHomePage().then(setGoods);
+  }, []);
+
+  if (goods === undefined) {
+    return (
+      <SafeAreaView style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>Loading...</Text>
+      </SafeAreaView>
+    )
+  }
   return (
     <SafeAreaView>
       <ISearchBar onSearch={()=>{console.log("Hello")}}/>
