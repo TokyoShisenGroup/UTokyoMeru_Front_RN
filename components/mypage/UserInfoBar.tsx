@@ -1,12 +1,13 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView }from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { UserDisplayProps } from '@/types';
+import {router} from 'expo-router';
 
 
 const UserInfoBar: React.FC<UserDisplayProps> = ({name, avatar}) =>{
     return (
         <TouchableOpacity onPress={() => {
-          console.log('进入账号详情');
+          router.push('/loginpage/Login');
         }}>
         <View style={styles.userInfoBar}>
         <Image

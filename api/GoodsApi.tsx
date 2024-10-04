@@ -47,7 +47,6 @@ export const getGoodDetail = async (goodID: number): Promise<GoodProps | undefin
         const good: GoodProps ={
         id: response.data.GoodID,
         title: response.data.Title,
-        image: response.data.Images[0],
         images: response.data.Images,
         price: response.data.Price,
         description: response.data.Description,

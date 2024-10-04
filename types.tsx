@@ -1,7 +1,6 @@
 export interface GoodProps {
     id: string;
     title: string;
-    image: string;
     images: string[];
     price: number;
     description: string;

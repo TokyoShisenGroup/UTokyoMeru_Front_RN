@@ -10,7 +10,6 @@ import Header from '@/components/goodspage/Header';
 const items: GoodProps = {
     id: '1',
     title: '叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段',
-    image: 'https://pic1.zhimg.com/v2-119565438456235a942996a574800eb8_b.jpg',
     images: ['https://pic1.zhimg.com/v2-119565438456235a942996a574800eb8_b.jpg', 'https://picx.zhimg.com/v2-0bdd648c59f9ab3fb91c54933f7b0c21_b.jpg'],
     price: 9999999.12,
     description:
