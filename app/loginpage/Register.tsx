@@ -100,7 +100,12 @@ const RegisterScreen = () => {
         return "非二元";
     }
   };
-  
+
+  const GenderLabel: React.FC<{ value: string }> = (props) => {
+    console.log(props);
+    return <Text>{props.value}</Text>
+  }
+
   const findAddressByPostalCode = async (postalCode: string) => {
     try {
       const response = await axios.get(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${postalCode}`);
@@ -278,7 +283,7 @@ const RegisterScreen = () => {
               onPress={() => setShowGenderPicker(true)}
             >
               <Text style={styles.pickerButtonText}>
-                {getGenderLabel(selectedGender)}
+                {value}
               </Text>
             </TouchableOpacity>
             <Modal
