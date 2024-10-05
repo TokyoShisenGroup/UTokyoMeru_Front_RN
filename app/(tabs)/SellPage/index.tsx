@@ -6,7 +6,9 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useForm, Controller } from 'react-hook-form';
 import { router } from 'expo-router';
 import { UPLOAD_IMAGE_URL, API_URL } from '@/constants/config';
+import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 type FormData = {
   title: string;
@@ -37,23 +39,60 @@ const SellItemPage: React.FC = () => {
     }
   };
 
-  const uploadImage = async (uri: string) => {
-    const formData = new FormData();
-    formData.append('image', {
+  const compressImage = async (uri: string) => {
+    const result = await ImageManipulator.manipulateAsync(
       uri,
-      type: 'image/jpeg',
-      name: 'upload.jpg',
-    } as any);
+      [{ resize: { width: 1000 } }], // 调整尺寸
+      { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // 压缩质量
+    );
+    return result.uri;
+  };
 
+  const uploadImage = async (uri: string) => {
     try {
-      const response = await fetch('您的服务器上传地址', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      const result = await response.json();
+       // 获取文件信息
+        const fileInfo = await FileSystem.getInfoAsync(uri);
+        const compressedUri = await compressImage(uri);
+        // 创建 FormData 对象
+        const formData = new FormData();
+        
+        // 从 uri 中提取文件名
+        const fileName = uri.split('/').pop() || 'image.jpg';
+        
+        // 创建一个 Blob 对象
+        const file = {
+          uri: compressedUri,
+          type: 'image/jpeg',
+          name: fileName,
+        };
+        
+        // 将文件添加到 FormData 中
+        formData.append('image', file as any);
+
+        console.log("上传图片中");
+        // 发送请求
+        const response = await fetch(`${UPLOAD_IMAGE_URL}/upload`, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+    
+      // 获取原始响应文本
+      const responseText = await response.text();
+
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('JSON 解析错误：', parseError);
+        console.error('无法解析的响应内容：', responseText);
+        throw new Error('服务器返回了无效的 JSON 数据');
+      }
+
+      console.log('解析后的结果：', result);
       return result.Images;
     } catch (error) {
       console.error('图片上传错误：', error);
@@ -61,19 +100,35 @@ const SellItemPage: React.FC = () => {
     }
   };
 
+  const uploadImages = async (images: string[]) => {
+    const uploadedUrls = [];
+    for (const image of images) {
+      const url = await uploadImage(image);
+      uploadedUrls.push(url);
+    }
+    return uploadedUrls;
+  };
+
   const onSubmit = async (data: FormData) => {
-    console.log(data);
     try {
-      const uploadedImageUrls = await Promise.all(images.map(uploadImage));
+      const uploadedImageUrls = await uploadImages(images);
       
       // 将上传后的图片URL和表单数据一起发送到服务器
       const postData = {
         ...data,
         images: uploadedImageUrls,
+        seller: 1,
+        is_invisible: false,
+        is_deleted: false,
+        is_bought: false,
       };
 
-      const response = await axios.post(`${API_URL}/goods`, postData);
-      console.log('提交的数据：', postData);
+      console.log('表单数据汇总：', postData);
+      const response = await axios.post(`${API_URL}/goods`, postData).catch((error) => {
+        console.error('商品发布失败：', error);
+        throw error;
+      });
+      console.log("商品发布成功");
       console.log('商品id：', response.data.ID);
       router.push({
         pathname: "/goodspage/GoodsDetail",
@@ -165,7 +220,7 @@ const SellItemPage: React.FC = () => {
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               style={styles.input}
-              placeholder="定个好价"
+              placeholder="定个价"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
