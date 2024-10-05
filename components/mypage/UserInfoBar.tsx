@@ -4,7 +4,7 @@ import { UserDisplayProps } from '@/types';
 import {router} from 'expo-router';
 
 
-const UserInfoBar: React.FC<UserDisplayProps> = ({name, avatar}) =>{
+const UserInfoBar: React.FC<UserDisplayProps> = ({Name: name, Avatar: avatar}) =>{
     return (
         <TouchableOpacity onPress={() => {
           router.push('/loginpage/Login');

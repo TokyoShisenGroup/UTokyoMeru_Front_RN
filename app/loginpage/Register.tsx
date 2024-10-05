@@ -8,7 +8,7 @@ import axios from 'axios'; // 需要安装 axios
 
 import Header from '@/components/mypage/Header';
 import { getPrefList, getCities } from '@/utils/getAddress';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { API_URL } from '@/constants/config'; 
 
 // 日本的都道府县列表
 const prefectures = [
@@ -88,23 +88,18 @@ const RegisterScreen = () => {
   ];
 
 
-  const getGenderLabel = (value: Gender) => {
+  const getGenderLabel = (value: string) => {
     switch (value) {
-      case Gender.Unknown:
+      case Gender.Unknown.toString():
         return "未知";
-      case Gender.Male:
+      case Gender.Male.toString():
         return "男";
-      case Gender.Female:
+      case Gender.Female.toString():
         return "女";
-      case Gender.NonBinary:
+      case Gender.NonBinary.toString():
         return "非二元";
     }
   };
-
-  const GenderLabel: React.FC<{ value: string }> = (props) => {
-    console.log(props);
-    return <Text>{props.value}</Text>
-  }
 
   const findAddressByPostalCode = async (postalCode: string) => {
     try {
@@ -120,15 +115,31 @@ const RegisterScreen = () => {
   };
   const onSubmit = async (data: any) => {
     console.log(data);
-    return;
+    var sendData = {
+      user_name: data.username,
+      mail_address: data.email,
+      verification_code: data.verificationCode,
+      password: data.password,
+      gender: data.gender,
+      birthday: data.birthDate,
+      phone_number: data.phone,
+      address: {
+        postal_code: data.postalCode,
+        prefecture: data.prefecture,
+        city: data.city,
+        address_detail: data.address
+      }
+    }
     try {
-      const response = await axios.post('https://your-api-endpoint.com/register', data);
+      const response = await axios.post(`${API_URL}/register`, sendData);
       
       if (response.status === 200) {
         Alert.alert('注册成功', '您已成功注册！');
         router.push('/loginpage/Login');
-      } else {
-        Alert.alert('注册失败', '请稍后重试');
+      } else if (response.status === 400) {
+        Alert.alert('注册失败', '验证码错误');
+      } else if (response.status === 500) {
+        Alert.alert('注册失败', '发生了一个错误，请稍后重试');
       }
     } catch (error) {
       console.error('注册错误:', error);
@@ -136,9 +147,16 @@ const RegisterScreen = () => {
     }
   };
 
-  const sendVerificationCode = () => {
-    // 发送验证码的逻辑
+  const sendVerificationCode = async (mail_address: string) => {
     console.log('发送验证码');
+    try {
+      const response = await axios.post(`${API_URL}/verification`, {
+        mail_address: mail_address
+      });
+    } catch (error) {
+      console.error('发送验证码错误:', error);
+      Alert.alert('发送验证码错误', '发生了一个错误，请稍后重试');
+    }
   };
 
   return (
@@ -217,8 +235,14 @@ const RegisterScreen = () => {
                 value={value}
                 placeholder="请输入验证码"
               />
-              <TouchableOpacity style={styles.codeButton} onPress={sendVerificationCode}>
-                <Text style={styles.codeButtonText}>发送验证码</Text>
+              <TouchableOpacity style={styles.codeButton} onPress={() => {
+                if (watch("email") === "") {
+                  Alert.alert("请输入邮箱");
+                  return;
+                }
+                sendVerificationCode(watch("email"))
+                }}>
+                <Text style={styles.buttonText}>发送验证码</Text>
               </TouchableOpacity>
             </View>
             {errors.verificationCode && typeof errors.verificationCode.message === 'string' && 
@@ -282,8 +306,8 @@ const RegisterScreen = () => {
               style={styles.pickerButton} 
               onPress={() => setShowGenderPicker(true)}
             >
-              <Text style={styles.pickerButtonText}>
-                {value}
+              <Text style={styles.pickerButtonText2}>
+                {getGenderLabel(value)}
               </Text>
             </TouchableOpacity>
             <Modal
@@ -329,9 +353,13 @@ const RegisterScreen = () => {
           <View>
             <Text style={styles.label}>出生日期</Text>
             <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-              <Text style={styles.dateInput}>
-                {value ? value.toLocaleDateString() : '请选择出生日期'}
-              </Text>
+                {value ? 
+                <Text style={styles.dateInput}>
+                  {value.toLocaleDateString()}
+                </Text> : 
+                <Text style={styles.dateInput}>
+                  请选择出生日期
+                </Text>}
             </TouchableOpacity>
 
             <Modal
@@ -401,12 +429,13 @@ const RegisterScreen = () => {
           name="postalCode"
         />
         <TouchableOpacity style={styles.zipCodeButton} onPress={() => findAddressByPostalCode(watch("postalCode"))}>
-          <Text style={styles.zipCodeButtonText}>查询</Text>
+          <Text style={styles.buttonText}>查询</Text>
         </TouchableOpacity>
       </View>
     <View style={styles.addressRow}>
     <Controller
         control={control}
+        defaultValue="---------"
         render={({ field: { onChange, value } }) => (
           <View style={styles.addressPickerContainer}>
             <Text style={styles.label}>都道府県</Text>
@@ -414,9 +443,10 @@ const RegisterScreen = () => {
               style={styles.pickerButton} 
               onPress={() => setShowPrefecturePicker(true)}
             >
-              <Text style={styles.pickerButtonText}>
-                {value || "選択してください"}
-              </Text>
+              
+              {value==="---------"?
+              <Text style={styles.pickerButtonText1}>{value}</Text>:
+              <Text style={styles.pickerButtonText2}>{value}</Text>}
             </TouchableOpacity>
             <Modal
               visible={showPrefecturePicker}
@@ -433,6 +463,7 @@ const RegisterScreen = () => {
                     }}
                     style={styles.picker}
                   >
+                    <Picker.Item key={"00"} label={"---------"} value={"---------"} />
                     {prefectures.map((pref) => (
                       <Picker.Item key={pref.id} label={pref.name} value={pref.name} />
                     ))}
@@ -441,6 +472,12 @@ const RegisterScreen = () => {
                 <TouchableOpacity 
                   style={styles.confirmButton}
                   onPress={() => {
+                    if (value === "---------") {
+                      Alert.alert("请选择都道府県");
+                      return;
+                    }
+                    setValue("city", "---------");
+                    setSelectedPrefecture(value);
                     setShowPrefecturePicker(false);
                     console.log(selectedPrefecture);
                     setShowCityPicker(true);
@@ -456,6 +493,7 @@ const RegisterScreen = () => {
       />
       <Controller
         control={control}
+        defaultValue="---------"
         render={({ field: { onChange, value } }) => (
           <View style={styles.addressPickerContainer}>
             <Text style={styles.label}>市区町村</Text>
@@ -464,9 +502,9 @@ const RegisterScreen = () => {
               onPress={() => setShowCityPicker(true)}
               disabled={!selectedPrefecture}
             >
-              <Text style={styles.pickerButtonText}>
-                {value || "選択してください"}
-              </Text>
+              {value==="---------"?
+              <Text style={styles.pickerButtonText1}>{value}</Text>:
+              <Text style={styles.pickerButtonText2}>{value}</Text>}
             </TouchableOpacity>
             <Modal
               visible={showCityPicker}
@@ -483,6 +521,7 @@ const RegisterScreen = () => {
                     }}
                     style={styles.picker}
                   >
+                    <Picker.Item key={"00"} label={"---------"} value={"---------"} />
                     {getCities(prefectures.find(pref => pref.name === selectedPrefecture)?.id || '')?.map((city) => (
                       <Picker.Item key={city.citycode} label={city.city} value={city.city} />
                     ))}
@@ -490,7 +529,14 @@ const RegisterScreen = () => {
                 </View>
                 <TouchableOpacity 
                   style={styles.confirmButton}
-                  onPress={() => setShowCityPicker(false)}
+                  onPress={() => {
+                    if (value === "---------") {
+                      Alert.alert("请选择市区町村");
+                      return;
+                    }
+                    setSelectedCity(value);
+                    setShowCityPicker(false)
+                  }}
                 >
                   <Text style={styles.confirmButtonText}>确定</Text>
                 </TouchableOpacity>
@@ -519,7 +565,7 @@ const RegisterScreen = () => {
       />
 
       <TouchableOpacity style={styles.registerButton} onPress={handleSubmit(onSubmit)}>
-        <Text style={styles.registerButtonText}>注册</Text>
+        <Text style={styles.buttonText}>注册</Text>
       </TouchableOpacity>
     </ScrollView>
     </SafeAreaView>
@@ -560,17 +606,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
   },
-  codeButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  dateInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-  },
   registerButton: {
     backgroundColor: '#007AFF',
     padding: 15,
@@ -579,7 +614,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 30,
   },
-  registerButtonText: {
+  buttonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
@@ -596,7 +631,11 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  pickerButtonText: {
+  pickerButtonText1: {
+    fontSize: 16,
+    color: '#ccc',
+  },
+  pickerButtonText2: {
     fontSize: 16,
   },
   modalContainer: {
@@ -662,16 +701,20 @@ const styles = StyleSheet.create({
     height: 45,
     width: 100,
   },
-  zipCodeButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
   closeButton: {
     marginTop: 10,
     alignItems: 'center',
     padding: 10,
     backgroundColor: '#f0f0f0',
     borderRadius: 5,
+  },
+  dateInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    color: '#ccc',
   },
 });
 

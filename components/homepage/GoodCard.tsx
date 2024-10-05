@@ -3,6 +3,8 @@ import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {Text, Card} from '@rneui/themed';
 import {GoodPropsSimplified} from '../../types';
 import {router} from 'expo-router';
+import FastImage from 'react-native-fast-image';
+
 
 interface GoodCardProps {
   item: GoodPropsSimplified;
@@ -11,6 +13,7 @@ interface GoodCardProps {
 const DynamicImage: React.FC<{uri: string}> = ({uri}) => {
   const [aspectRatio, setAspectRatio] = useState(1);
 
+  console.log(uri);
   return (
     <Card.Image
       source={{uri}}
@@ -19,6 +22,9 @@ const DynamicImage: React.FC<{uri: string}> = ({uri}) => {
       onLoad={event => {
         const {width, height} = event.nativeEvent.source;
         setAspectRatio(width / height);
+      }}
+      onError={() => {
+        console.log("Error loading image");
       }}
     />
   );
@@ -29,25 +35,25 @@ const GoodCard: React.FC<GoodCardProps> = ({item}) => {
     <View style={styles.cardContainer}>
       <TouchableOpacity
         onPress={() => {
-          console.log("Pressed card with id:", item.id);
+          console.log("Pressed card with id:", item.GoodID);
           router.push({
             pathname: "/goodspage/GoodsDetail",
-            params: { id: item.id }
+            params: { id: item.GoodID }
           });
         }}>
         <Card containerStyle={styles.card}>
-          <DynamicImage uri={item.image} />
+          <DynamicImage uri={item.Images[0]} />
           <Text style={styles.description} numberOfLines={3}>
-            {item.description}
+            {item.Description}
           </Text>
-          <Text style={styles.price}>¥ {item.price}</Text>
+          <Text style={styles.price}>¥ {item.Price}</Text>
           <View style={styles.user}>
             <Image
               style={styles.avatar}
               resizeMode="cover"
-              source={{uri: item.user.avatar}}
+              source={{uri: item.User?.Avatar ||"https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg"}}
             />
-            <Text style={styles.name}>{item.user.name}</Text>
+            <Text style={styles.name}>{item.User?.Name||"匿名"}</Text>
           </View>
         </Card>
       </TouchableOpacity>
@@ -62,13 +68,16 @@ const styles = StyleSheet.create({
   },
   card: {
     padding: 0,
-    margin: 5,
-    borderRadius: 10,
+    marginRight: 3,
+    marginLeft: 3,
+    marginTop: 0,
+    borderRadius: 8,
     overflow: 'hidden',
     flex: 1,
   },
   image: {
     width: '100%',
+    height: undefined,
   },
   description: {
     margin: 10,

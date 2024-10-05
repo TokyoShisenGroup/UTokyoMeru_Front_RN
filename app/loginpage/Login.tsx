@@ -1,11 +1,32 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Alert, Image } from 'react-native';
+import { useForm, Controller } from 'react-hook-form';
 import Header from '@/components/mypage/Header';
-import {router} from 'expo-router'
+import { router } from 'expo-router';
+import axios from 'axios';
+import { API_URL } from '@/constants/config';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
+type FormData = {
+  email_address: string;
+  password: string;
+};
 
 const Login: React.FC = () => {
+  const { control, handleSubmit } = useForm<FormData>();
+
   const handleBackPress = () => {
-    router.back()
+    router.back();
+  };
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await axios.post(`${API_URL}/login`, data);
+      console.log(response.data);
+    } catch (error) {
+      console.error('登录失败:', error);
+      Alert.alert('登录失败', '发生了一个错误，请稍后重试');
+    }
   };
 
   return (
@@ -13,27 +34,54 @@ const Login: React.FC = () => {
       <Header title="登录" onBackPress={handleBackPress} />
       <View style={styles.container}>
         <View style={styles.content}>
+          <Image 
+          source={{
+            uri:"https://pbs.twimg.com/profile_images/1774583774896091137/zJy327_C_400x400.jpg"
+          }} 
+            style={styles.logo} />
           <Text style={styles.title}>欢迎使用东大煤炉</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="请输入账户"
-            placeholderTextColor="#999"
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                placeholder="请输入账户"
+                placeholderTextColor="#999"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="email_address"
+            rules={{ required: true }}
+            defaultValue=""
           />
-          <TextInput
-            style={styles.input}
-            placeholder="请输入密码"
-            placeholderTextColor="#999"
-            secureTextEntry
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                placeholder="请输入密码"
+                placeholderTextColor="#999"
+                secureTextEntry
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="password"
+            rules={{ required: true }}
+            defaultValue=""
           />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.loginButton}>
+            <TouchableOpacity style={styles.loginButton} onPress={handleSubmit(onSubmit)}>
               <Text style={styles.loginButtonText}>登录</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.registerButton} onPress={()=> router.push("/loginpage/Register")}>
+            <TouchableOpacity style={styles.registerButton} onPress={() => router.push("/loginpage/Register")}>
               <Text style={styles.registerButtonText}>注册</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={()=> console.log("忘记密码")}>
+          <TouchableOpacity onPress={() => console.log("忘记密码")}>
             <Text style={styles.forgetPassword}>忘记密码？</Text>
           </TouchableOpacity>
         </View>
@@ -59,6 +107,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 20,
+    height: hp(15),
+  },
+  logo: {
+    width: hp(15),
+    height: hp(15),
+    marginBottom: hp(2),
   },
   input: {
     width: '100%',

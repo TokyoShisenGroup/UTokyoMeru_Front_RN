@@ -16,13 +16,13 @@ const UserCard: React.FC<UserProps> = ( user ) => {
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
       <View style={styles.avatarContainer}>
-        <Image source={{ uri: user.avatar }} style={styles.avatar} />
+        <Image source={{ uri: user.Avatar }} style={styles.avatar} />
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.name}>{user.name}</Text>
+        <Text style={styles.name}>{user.Name}</Text>
         <View style={styles.ratingContainer}>
-          <StarRating rating={user.rating} size={14} color="#FFD700" />
-          <Text style={styles.ratingText}>{user.rating.toFixed(1)}</Text>
+          <StarRating rating={user.Rating} size={14} color="#FFD700" />
+          <Text style={styles.ratingText}>{user.Rating?.toFixed(1)}</Text>
         </View>
       </View>
       <Icon name="chevron-forward" size={24} color="#CCCCCC" style={styles.chevron} />

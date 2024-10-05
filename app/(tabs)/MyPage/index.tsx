@@ -10,7 +10,7 @@ function MyPage() {
 
       <SafeAreaView> 
         {/* 用户信息条 */}
-        <UserInfoBar name="yamanashi" avatar='https://images.pexels.com/photos/598745/pexels-photo-598745.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb'/>
+        <UserInfoBar Name="yamanashi" Avatar='https://images.pexels.com/photos/598745/pexels-photo-598745.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb'/>
         {/* 设置选项 */}
         <SettingsList />
       </SafeAreaView>

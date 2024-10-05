@@ -1,40 +1,40 @@
 export interface GoodProps {
-    id: string;
-    title: string;
-    images: string[];
-    price: number;
-    description: string;
-    user: UserProps;
-    tags: string[];
+    GoodID: string;
+    Title: string;
+    Images: string[];
+    Price: number;
+    Description: string;
+    User: UserProps;
+    Tags: string[];
 }
 
 export interface GoodPropsSimplified {
-  id: string;
-  title: string;
-  image: string;
-  price: number;
-  description: string;
-  user: UserDisplayProps;
+  GoodID: string;
+  Title: string;
+  Images: string[];
+  Price: number;
+  Description: string;
+  User: UserDisplayProps;
 }
   
 export interface ImageProps {
-    uri: string;
+    Uri: string;
   }
   
 export interface ColumnProps {
-    data: GoodPropsSimplified[];
+    Data: GoodPropsSimplified[];
   }
   
 export interface UserDisplayProps {
-    name: string;
-    avatar: string;
+    Name: string;
+    Avatar: string;
 }
 
 export interface UserProps {
-    id: string;
-    name: string;
-    avatar: string;
-    rating: number;
+    UserID: string;
+    Name: string;
+    Avatar: string;
+    Rating: number;
 }
 
 export interface TagProps {

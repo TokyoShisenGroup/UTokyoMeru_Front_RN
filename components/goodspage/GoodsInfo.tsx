@@ -6,19 +6,19 @@ import ButtonSheets from '@/components/goodspage/ButtonSheets';
 const GoodsInfo: React.FC<GoodProps> = (props) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{props.title}</Text>
+            <Text style={styles.title}>{props.Title}</Text>
             <View style={styles.priceContainer}>
                 <Text style={styles.currencySymbol}>¥</Text>
-                <Text style={styles.price}>{props.price}</Text>
+                <Text style={styles.price}>{props.Price}</Text>
                 <Text style={styles.lastUpdate}>最后更新：1分前</Text>
             </View>
             <ButtonSheets />
             <View style={styles.descriptionContainer}>
                 <Text style={styles.descriptionTitle}>商品详情</Text>
-                <Text style={styles.description}>{props.description}</Text>
+                <Text style={styles.description}>{props.Description}</Text>
             </View>
             <View style={styles.tagsContainer}>
-                {props.tags.map((tag, index) => (
+                {props.Tags?.map((tag, index) => (
                     <Tag 
                     key={index} 
                     text={tag} 
@@ -26,7 +26,7 @@ const GoodsInfo: React.FC<GoodProps> = (props) => {
                     />
                 ))}
         </View>
-            <UserCard {...props.user} />
+            <UserCard {...props.User} />
         </View>
     )
 }
