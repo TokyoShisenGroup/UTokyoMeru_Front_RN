@@ -73,10 +73,10 @@ const RegisterScreen = () => {
   const selectedCity = watch("city");
 
   enum Gender {
-    Unknown = 0,
-    Male = 1,
-    Female = 2,
-    NonBinary = 3
+    Unknown = "0",
+    Male = "1",
+    Female = "2",
+    NonBinary = "3"
   }
   
   // 创建一个映射对象,用于转换显示文本和枚举值
@@ -98,6 +98,8 @@ const RegisterScreen = () => {
         return "女";
       case Gender.NonBinary.toString():
         return "非二元";
+      default:
+        return "认证失败的性别"
     }
   };
 
