@@ -67,12 +67,24 @@ const storageApi = {
   },
 
   getToken: async (): Promise<string | null> => {
+    if (await storageApi.load("token") === null) {
+      console.log("token not found");
+      return null;
+    }
     return await storageApi.load("token");
   },
   getUserMailaddress: async (): Promise<string | null> => {
+    if (await storageApi.load("user_mailaddress") === null) {
+      console.log("user_mailaddress not found");
+      return null;
+    }
     return await storageApi.load("user_mailaddress");
   },
   getUserName: async (): Promise<string | null> => {
+    if (await storageApi.load("user_name") === null) {
+      console.log("user_name not found");
+      return null;
+    }
     return await storageApi.load("user_name");
   },
   saveToken: async (token: string): Promise<void> => {
