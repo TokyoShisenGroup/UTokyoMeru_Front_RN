@@ -13,21 +13,21 @@ type FormData = {
   password: string;
 };
 
-const test = async () => {
-  await storageApi.clearAll();
+// const test = async () => {
+//   await storageApi.clearAll();
 
-  console.log("test Start");
-  if (storageApi.load("testKey") === null) {
-  await storageApi.save("testKey", "test");
-  console.log("testKey saved");
-  }
-  else {
-    console.log("testKey already exists");
-    const pre = await storageApi.load("testKey");
-    await storageApi.save("testKey", pre + "test");
-    console.log(await storageApi.load("testKey"));
-  }
-}
+//   console.log("test Start");
+//   if (storageApi.load("testKey") === null) {
+//   await storageApi.save("testKey", "test");
+//   console.log("testKey saved");
+//   }
+//   else {
+//     console.log("testKey already exists");
+//     const pre = await storageApi.load("testKey");
+//     await storageApi.save("testKey", pre + "test");
+//     console.log(await storageApi.load("testKey"));
+//   }
+// }
 
 const Login: React.FC = () => {
   const { control, handleSubmit } = useForm<FormData>();
@@ -40,6 +40,9 @@ const Login: React.FC = () => {
     try {
       const response = await axios.post(`${API_URL}/login`, data);
       console.log(response.data);
+      await storageApi.saveToken(response.data.token);
+      await storageApi.saveUserMailaddress(response.data.user_mailaddress);
+      await storageApi.saveUserName(response.data.user_name);
     } catch (error) {
       console.error('登录失败:', error);
       Alert.alert('登录失败', '发生了一个错误，请稍后重试');
@@ -99,7 +102,7 @@ const Login: React.FC = () => {
 {/* 
 写个按钮来测试那个onSubmit函数
 */}
-<Button onPress={test}></Button>
+{/* <Button onPress={test}></Button> */}
 
             <TouchableOpacity style={styles.registerButton} onPress={() => router.push("/loginpage/Register")}>
               <Text style={styles.registerButtonText}>注册</Text>

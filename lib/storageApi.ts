@@ -3,6 +3,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Storage from 'react-native-storage';
 
+
+
+
+
+
 // 定义存储数据的类型
 type StorageData = any; // 可以根据你的需求修改类型
 
@@ -60,6 +65,25 @@ const storageApi = {
       console.error('Error clearing all data:', error);
     }
   },
+
+  getToken: async (): Promise<string | null> => {
+    return await storageApi.load("token");
+  },
+  getUserMailaddress: async (): Promise<string | null> => {
+    return await storageApi.load("user_mailaddress");
+  },
+  getUserName: async (): Promise<string | null> => {
+    return await storageApi.load("user_name");
+  },
+  saveToken: async (token: string): Promise<void> => {
+    await storageApi.save("token", token);
+  },
+  saveUserMailaddress: async (user_mailaddress: string): Promise<void> => {
+    await storageApi.save("user_mailaddress", user_mailaddress);
+  },
+  saveUserName: async (user_name: string): Promise<void> => {
+    await storageApi.save("user_name", user_name);
+  }
 };
 
 // 导出封装的 storageApi
