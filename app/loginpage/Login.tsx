@@ -100,8 +100,12 @@ const Login: React.FC = () => {
     // 检查是否已经登录
     const checkLoginStatus = async () => {
       const userName = await storageApi.load('username');
-      if (userName) {
+      if (userName !== "") {
         setIsLoggedIn(true);
+        Alert.alert('你已经是登录状态了');
+      }
+      else {
+        Alert.alert("你还没有登录");
       }
     };
     checkLoginStatus();
@@ -120,6 +124,7 @@ const Login: React.FC = () => {
       await storageApi.saveUserMailaddress(response.data.user_mailaddress);
       await storageApi.saveUserName(response.data.user_name);
       setIsLoggedIn(true); // 登录成功后更新状态
+      Alert.alert("你登录成功了");
     } catch (error) {
       console.error('登录失败:', error);
       Alert.alert('登录失败', '发生了一个错误，请稍后重试');

@@ -22,6 +22,11 @@ const storage = new Storage({
 
 // 封装API方法
 const storageApi = {
+  init: async (): Promise<void> => {
+    await storageApi.save("token", "");
+    await storageApi.save("usermailaddress", "");
+    await storageApi.save("username", "");
+  },
   // 存储数据
   save: async (key: string, data: StorageData): Promise<void> => {
     try {
@@ -41,7 +46,7 @@ const storageApi = {
       const data = await storage.load({ key: key });
       return data;
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.log('Error loading data:', error);
       return null;
     }
   },
@@ -59,7 +64,10 @@ const storageApi = {
   // 清除所有数据
   clearAll: async (): Promise<void> => {
     try {
-      await AsyncStorage.clear();
+      await storageApi.save("token", "");
+      await storageApi.save("usermailaddress", "");
+      await storageApi.save("username", "");
+
       console.log('All data cleared.');
     } catch (error) {
       console.error('Error clearing all data:', error);
@@ -67,33 +75,36 @@ const storageApi = {
   },
 
   getToken: async (): Promise<string | null> => {
-    if (await storageApi.load("token") === null) {
+    if (await storageApi.load("token") === "") {
       console.log("token not found");
-      return null;
+      return "";
     }
     return await storageApi.load("token");
   },
   getUserMailaddress: async (): Promise<string | null> => {
-    if (await storageApi.load("usermailaddress") === null) {
+    if (await storageApi.load("usermailaddress") === "") {
       console.log("usermailaddress not found");
-      return null;
+      return "";
     }
     return await storageApi.load("usermailaddress");
   },
   getUserName: async (): Promise<string | null> => {
-    if (await storageApi.load("username") === null) {
+    if (await storageApi.load("username") === "") {
       console.log("username not found");
-      return null;
+      return "";
     }
     return await storageApi.load("username");
   },
   saveToken: async (token: string): Promise<void> => {
+    await storageApi.save("token", "");
     await storageApi.save("token", token);
   },
   saveUserMailaddress: async (user_mailaddress: string): Promise<void> => {
+    await storageApi.save("token", "");
     await storageApi.save("usermailaddress", user_mailaddress);
   },
   saveUserName: async (user_name: string): Promise<void> => {
+    await storageApi.save("token", "");
     await storageApi.save("username", user_name);
   }
 };

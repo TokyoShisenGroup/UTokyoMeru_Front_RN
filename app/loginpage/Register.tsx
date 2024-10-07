@@ -132,7 +132,9 @@ const RegisterScreen = () => {
       }
     }
     try {
-      const response = await axios.post(`${API_URL}/register`, sendData);
+      console.log("sendData");
+      console.log(sendData);
+      const response = await axios.post(`${API_URL}/v1/signup`, sendData);
       
       if (response.status === 200) {
         Alert.alert('注册成功', '您已成功注册！');
