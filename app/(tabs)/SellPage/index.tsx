@@ -76,6 +76,7 @@ const SellItemPage: React.FC = () => {
           body: formData,
           headers: {
             'Content-Type': 'multipart/form-data',
+            "Authorization": "14ac5499cfdd2bb2859e4476d2e5b1d2bad079bf",
           },
         });
 
