@@ -6,11 +6,28 @@ import { router } from 'expo-router';
 import axios from 'axios';
 import { API_URL } from '@/constants/config';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import storageApi from '@/lib/storageApi';
+import { Button } from '@rneui/base';
 type FormData = {
   email_address: string;
   password: string;
 };
+
+const test = async () => {
+  await storageApi.clearAll();
+
+  console.log("test Start");
+  if (storageApi.load("testKey") === null) {
+  await storageApi.save("testKey", "test");
+  console.log("testKey saved");
+  }
+  else {
+    console.log("testKey already exists");
+    const pre = await storageApi.load("testKey");
+    await storageApi.save("testKey", pre + "test");
+    console.log(await storageApi.load("testKey"));
+  }
+}
 
 const Login: React.FC = () => {
   const { control, handleSubmit } = useForm<FormData>();
@@ -77,6 +94,13 @@ const Login: React.FC = () => {
             <TouchableOpacity style={styles.loginButton} onPress={handleSubmit(onSubmit)}>
               <Text style={styles.loginButtonText}>登录</Text>
             </TouchableOpacity>
+
+
+{/* 
+写个按钮来测试那个onSubmit函数
+*/}
+<Button onPress={test}></Button>
+
             <TouchableOpacity style={styles.registerButton} onPress={() => router.push("/loginpage/Register")}>
               <Text style={styles.registerButtonText}>注册</Text>
             </TouchableOpacity>
