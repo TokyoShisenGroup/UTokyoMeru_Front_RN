@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Alert, Image } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import Header from '@/components/mypage/Header';
@@ -8,114 +8,6 @@ import { API_URL } from '@/constants/config';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import storageApi from '@/lib/storageApi';
 import { Button } from '@rneui/base';
-type FormData = {
-  email_address: string;
-  password: string;
-};
-
-// const test = async () => {
-//   await storageApi.clearAll();
-
-//   console.log("test Start");
-//   if (storageApi.load("testKey") === null) {
-//   await storageApi.save("testKey", "test");
-//   console.log("testKey saved");
-//   }
-//   else {
-//     console.log("testKey already exists");
-//     const pre = await storageApi.load("testKey");
-//     await storageApi.save("testKey", pre + "test");
-//     console.log(await storageApi.load("testKey"));
-//   }
-// }
-
-const Login: React.FC = () => {
-  const { control, handleSubmit } = useForm<FormData>();
-
-  const handleBackPress = () => {
-    router.back();
-  };
-
-  const onSubmit = async (data: FormData) => {
-    try {
-      const response = await axios.post(`${API_URL}/login`, data);
-      console.log(response.data);
-      await storageApi.saveToken(response.data.token);
-      await storageApi.saveUserMailaddress(response.data.user_mailaddress);
-      await storageApi.saveUserName(response.data.user_name);
-    } catch (error) {
-      console.error('登录失败:', error);
-      Alert.alert('登录失败', '发生了一个错误，请稍后重试');
-    }
-  };
-
-  return (
-    <SafeAreaView style={styles.safeArea}>
-      <Header title="登录" onBackPress={handleBackPress} />
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <Image 
-          source={{
-            uri:"https://pbs.twimg.com/profile_images/1774583774896091137/zJy327_C_400x400.jpg"
-          }} 
-            style={styles.logo} />
-          <Text style={styles.title}>欢迎使用东大煤炉</Text>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                placeholder="请输入账户"
-                placeholderTextColor="#999"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="email_address"
-            rules={{ required: true }}
-            defaultValue=""
-          />
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                placeholder="请输入密码"
-                placeholderTextColor="#999"
-                secureTextEntry
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="password"
-            rules={{ required: true }}
-            defaultValue=""
-          />
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.loginButton} onPress={handleSubmit(onSubmit)}>
-              <Text style={styles.loginButtonText}>登录</Text>
-            </TouchableOpacity>
-
-
-{/* 
-写个按钮来测试那个onSubmit函数
-*/}
-{/* <Button onPress={test}></Button> */}
-
-            <TouchableOpacity style={styles.registerButton} onPress={() => router.push("/loginpage/Register")}>
-              <Text style={styles.registerButtonText}>注册</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={() => console.log("忘记密码")}>
-            <Text style={styles.forgetPassword}>忘记密码？</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-};
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -188,5 +80,129 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+
+type FormData = {
+  mail_address: string;
+  password: string;
+};
+
+
+
+const Login: React.FC = () => {
+  const { control, handleSubmit } = useForm<FormData>();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const logout = () => {
+    storageApi.clearAll();
+    setIsLoggedIn(false);
+  }
+  useEffect(() => {
+    // 检查是否已经登录
+    const checkLoginStatus = async () => {
+      const userName = await storageApi.load('username');
+      if (userName) {
+        setIsLoggedIn(true);
+      }
+    };
+    checkLoginStatus();
+  }, []);
+
+  const handleBackPress = () => {
+    router.back();
+  };
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await axios.post(`${API_URL}/v1/login`, data);
+      console.log("response");
+      console.log(response.data);
+      await storageApi.saveToken(response.data.token);
+      await storageApi.saveUserMailaddress(response.data.user_mailaddress);
+      await storageApi.saveUserName(response.data.user_name);
+      setIsLoggedIn(true); // 登录成功后更新状态
+    } catch (error) {
+      console.error('登录失败:', error);
+      Alert.alert('登录失败', '发生了一个错误，请稍后重试');
+      setIsLoggedIn(false); // 登录失败后更新状态
+    }
+  };
+
+  if (isLoggedIn) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Header title="已登录" onBackPress={handleBackPress} />
+        <View style={styles.container}>
+          <Text style={styles.title}>你已经登录了！</Text>
+        </View>
+        {/* 注销按钮 还需要setlogin为false*/}
+        <Button onPress={logout}>注销</Button>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <Header title="登录" onBackPress={handleBackPress} />
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Image
+            source={{
+              uri: "https://pbs.twimg.com/profile_images/1774583774896091137/zJy327_C_400x400.jpg"
+            }}
+            style={styles.logo}
+          />
+          <Text style={styles.title}>欢迎使用东大煤炉</Text>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                placeholder="请输入账户"
+                placeholderTextColor="#999"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="mail_address"
+            rules={{ required: true }}
+            defaultValue=""
+          />
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                placeholder="请输入密码"
+                placeholderTextColor="#999"
+                secureTextEntry
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="password"
+            rules={{ required: true }}
+            defaultValue=""
+          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.loginButton} onPress={handleSubmit(onSubmit)}>
+              <Text style={styles.loginButtonText}>登录</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.registerButton} onPress={() => router.push("/loginpage/Register")}>
+              <Text style={styles.registerButtonText}>注册</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={() => console.log("忘记密码")}>
+            <Text style={styles.forgetPassword}>忘记密码？</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+
 
 export default Login;

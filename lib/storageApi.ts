@@ -74,27 +74,27 @@ const storageApi = {
     return await storageApi.load("token");
   },
   getUserMailaddress: async (): Promise<string | null> => {
-    if (await storageApi.load("user_mailaddress") === null) {
-      console.log("user_mailaddress not found");
+    if (await storageApi.load("usermailaddress") === null) {
+      console.log("usermailaddress not found");
       return null;
     }
-    return await storageApi.load("user_mailaddress");
+    return await storageApi.load("usermailaddress");
   },
   getUserName: async (): Promise<string | null> => {
-    if (await storageApi.load("user_name") === null) {
-      console.log("user_name not found");
+    if (await storageApi.load("username") === null) {
+      console.log("username not found");
       return null;
     }
-    return await storageApi.load("user_name");
+    return await storageApi.load("username");
   },
   saveToken: async (token: string): Promise<void> => {
     await storageApi.save("token", token);
   },
   saveUserMailaddress: async (user_mailaddress: string): Promise<void> => {
-    await storageApi.save("user_mailaddress", user_mailaddress);
+    await storageApi.save("usermailaddress", user_mailaddress);
   },
   saveUserName: async (user_name: string): Promise<void> => {
-    await storageApi.save("user_name", user_name);
+    await storageApi.save("username", user_name);
   }
 };
 
