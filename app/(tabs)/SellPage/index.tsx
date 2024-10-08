@@ -9,6 +9,8 @@ import { UPLOAD_IMAGE_URL, API_URL } from '@/constants/config';
 import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Tag from '@/components/goodspage/Tag'
 
 type FormData = {
   title: string;
@@ -19,6 +21,7 @@ type FormData = {
 
 const SellItemPage: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
   const { errors: formErrors } = useFormState({ control });
 
@@ -159,25 +162,23 @@ const SellItemPage: React.FC = () => {
             control={control}
             rules={{ required: '商品名称不能为空' }}
             render={({ field: { onChange, onBlur, value } }) => (
-              <View>
-                <TextInput
-                  style={[
-                    styles.input,
-                    formErrors.title && styles.inputError
-                  ]}
-                  placeholder="请输入商品名称"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-                {formErrors.title && <Text style={styles.errorText}>{formErrors.title.message}</Text>}
-              </View>
+              <TextInput
+                style={styles.descriptionInput}
+                placeholder="请输入商品名称"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
             )}
             name="title"
           />
         </View>
+        <View style={styles.errorContainer}>
+          {formErrors.title && <Text style={styles.errorText}>{formErrors.title.message}</Text>}
+        </View>
         <View style={styles.descriptionContainer}>
           <Text style={styles.title}>商品描述</Text>
+          
           <Controller
             control={control}
             rules={{ required: '商品描述不能为空' }}
@@ -194,8 +195,6 @@ const SellItemPage: React.FC = () => {
             )}
             name="description"
           />
-          {formErrors.description && <Text style={styles.errorText}>{formErrors.description.message}</Text>}
-          
           <ScrollView horizontal style={styles.imageScrollView}>
             {images.map((image, index) => (
               <View key={index} style={styles.imageWrapper}>
@@ -214,26 +213,37 @@ const SellItemPage: React.FC = () => {
               </TouchableOpacity>
             )}
           </ScrollView>
+          
+        </View>
+        <View style={styles.errorContainer}>
+          {formErrors.description && <Text style={styles.errorText}>{formErrors.description.message}</Text>}
         </View>
         <View>
           <Text style={styles.title}>价格</Text>
         </View>
-        <Controller
-          control={control}
-          rules={{ required: '价格不能为空' }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              placeholder="定个价"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              keyboardType="numeric"
-            />
-          )}
-          name="price"
-        />
-        {formErrors.price && <Text style={styles.errorText}>{formErrors.price.message}</Text>}
+        <View>
+          <Controller
+            control={control}
+            rules={{ required: '价格不能为空' }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <View style={styles.priceContainer}>
+                <Text style={{fontSize: 26}}>￥</Text>
+                <TextInput
+                  style={styles.priceInput}
+                  placeholder="定个价"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  keyboardType="numeric"
+                />
+              </View>
+            )}
+            name="price"
+          />
+        </View>
+        <View style={styles.errorContainer}>
+          {formErrors.price && <Text style={styles.errorText}>{formErrors.price.message}</Text>}
+        </View>
         <View>
           <Text style={styles.title}>标签</Text>
         </View>
@@ -241,7 +251,7 @@ const SellItemPage: React.FC = () => {
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              style={styles.input}
+              style={styles.tagInput}
               placeholder="打上标签让更多人看见"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -274,8 +284,6 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     height: hp(40),
-    marginBottom: 20,
-    marginTop: 20,
   },
   descriptionInput: {
     flex: 1,
@@ -283,6 +291,9 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlignVertical: 'top',
     backgroundColor: '#fff',
+  },
+  errorContainer: {
+    marginBottom: 10,
   },
   imageScrollView: {
     flexDirection: 'row',
@@ -333,22 +344,33 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#ddd',
   },
-  input: {
+  priceInput: {
     height: 40,
+    width: wp(80),
     borderColor: '#ddd',
-    borderWidth: 1,
+    borderBottomWidth: 2,
     borderRadius: 5,
-    paddingHorizontal: 10,
     marginBottom: 10,
+    paddingHorizontal: 10,
   },
-  inputError: {
-    borderColor: 'red',
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    maxWidth: wp(80),
+  },
+  tagInput: {
+    height: 40,
+    width: wp(87),
+    borderColor: '#ddd',
+    borderBottomWidth: 2,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
   },
   errorText: {
     color: 'red',
     fontSize: 12,
-    marginTop: -5,
-    marginBottom: 10,
+    marginTop: 5,
   },
   titleContainer: {
     flexDirection: 'row',
