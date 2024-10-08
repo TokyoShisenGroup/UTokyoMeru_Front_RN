@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView,
 import { Header } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { useForm, Controller, useFormState } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { router } from 'expo-router';
 import { UPLOAD_IMAGE_URL, API_URL } from '@/constants/config';
 import * as FileSystem from 'expo-file-system';
@@ -14,15 +14,19 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 type FormData = {
   title: string;
   description: string;
-  price: string;
+  price: number;
+  tags: string[];
+  tagInput: string;
 };
 
 const SellItemPage: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInputValue, setTagInputValue] = useState('');
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
-  const { errors: formErrors } = useFormState({ control });
+  const { control, handleSubmit, setValue, getValues, watch, formState: { errors } } = useForm<FormData>({
+    defaultValues: {
+      tags: [],
+      tagInput: '',
+    },
+  });
 
   const selectImage = async () => {
     try {
@@ -64,17 +68,17 @@ const SellItemPage: React.FC = () => {
       const compressedUri = await compressImage(uri);
       // 创建 FormData 对象
       const formData = new FormData();
-      
+
       // 从 uri 中提取文件名
       const fileName = uri.split('/').pop() || 'image.jpg';
-      
+
       // 创建一个 Blob 对象
       const file = {
         uri: compressedUri,
         type: 'image/jpeg',
         name: fileName,
       };
-      
+
       // 将文件添加到 FormData 中
       formData.append('file', file as any);
 
@@ -104,27 +108,47 @@ const SellItemPage: React.FC = () => {
     return uploadedUrls;
   };
 
+  const handleTagInputChange = (text: string, onChange: (value: string) => void) => {
+    if (text.endsWith(' ') || text.endsWith(',') || text.endsWith('\n')) {
+      const newTag = text.trim().replace(/,|\s/g, '');
+      if (newTag !== '') {
+        const currentTags = getValues('tags') || [];
+        setValue('tags', [...currentTags, newTag]);
+      }
+      onChange(''); // 清空输入框
+    } else {
+      onChange(text);
+    }
+  };
+
+  const removeTag = (index: number) => {
+    const currentTags = getValues('tags') || [];
+    const newTags = currentTags.filter((_, i) => i !== index);
+    setValue('tags', newTags);
+  };
+
   const onSubmit = async (data: FormData) => {
     try {
-      const uploadedImageUrls = await uploadImages(images);
-      
-      // 将上传后的图片URL和表单数据一起发送到服务器
+      // const uploadedImageUrls = await uploadImages(images);
+      const uploadedImageUrls = [] as string[]
+      // 移除 tagInput
+      const { tagInput, ...restData } = data;
+
       const postData = {
-        ...data,
+        ...restData,
         images: uploadedImageUrls,
-        tags: tags,
-        seller: 1,
+        sellerid: 1,
         is_invisible: false,
         is_deleted: false,
         is_bought: false,
       };
+      postData.price = Number(postData.price)
 
       console.log('表单数据汇总：', postData);
-      const response = await axios.post(`${API_URL}/goods`, postData).catch((error) => {
-        console.error('商品发布失败：', error);
-        throw error;
-      });
+      const response = await axios.post(`${API_URL}/goods/`, postData);
+      // const response = await axios.get(`${API_URL}/goods`)
       console.log("商品发布成功");
+      console.log(response.data)
       console.log('商品id：', response.data.ID);
       router.push({
         pathname: "/goodspage/GoodsDetail",
@@ -134,22 +158,6 @@ const SellItemPage: React.FC = () => {
       console.error('提交表单错误：', error);
       Alert.alert('发布失败', '请稍后重试');
     }
-  };
-
-  const handleTagInputChange = (text: string) => {
-    if (text.endsWith(' ') || text.endsWith(',') || text.endsWith('\n')) {
-      const newTag = text.trim().replace(/,|\s/g, '');
-      if (newTag !== '') {
-        setTags([...tags, newTag]);
-      }
-      setTagInputValue('');
-    } else {
-      setTagInputValue(text);
-    }
-  };
-
-  const removeTag = (index: number) => {
-    setTags(prevTags => prevTags.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
@@ -190,11 +198,11 @@ const SellItemPage: React.FC = () => {
           />
         </View>
         <View style={styles.errorContainer}>
-          {formErrors.title && <Text style={styles.errorText}>{formErrors.title.message}</Text>}
+          {errors.title && <Text style={styles.errorText}>{errors.title.message}</Text>}
         </View>
         <View style={styles.descriptionContainer}>
           <Text style={styles.title}>商品描述</Text>
-          
+
           <Controller
             control={control}
             rules={{ required: '商品描述不能为空' }}
@@ -215,8 +223,8 @@ const SellItemPage: React.FC = () => {
             {images.map((image, index) => (
               <View key={index} style={styles.imageWrapper}>
                 <Image source={{ uri: image }} style={styles.previewImage} />
-                <TouchableOpacity 
-                  style={styles.deleteButton} 
+                <TouchableOpacity
+                  style={styles.deleteButton}
                   onPress={() => deleteImage(index)}
                 >
                   <Text style={styles.deleteButtonText}>X</Text>
@@ -229,10 +237,10 @@ const SellItemPage: React.FC = () => {
               </TouchableOpacity>
             )}
           </ScrollView>
-          
+
         </View>
         <View style={styles.errorContainer}>
-          {formErrors.description && <Text style={styles.errorText}>{formErrors.description.message}</Text>}
+          {errors.description && <Text style={styles.errorText}>{errors.description.message}</Text>}
         </View>
         <View>
           <Text style={styles.title}>价格</Text>
@@ -243,13 +251,12 @@ const SellItemPage: React.FC = () => {
             rules={{ required: '价格不能为空' }}
             render={({ field: { onChange, onBlur, value } }) => (
               <View style={styles.priceContainer}>
-                <Text style={{fontSize: 26}}>￥</Text>
+                <Text style={{ fontSize: 26 }}>￥</Text>
                 <TextInput
                   style={styles.priceInput}
                   placeholder="定个价"
                   onBlur={onBlur}
                   onChangeText={onChange}
-                  value={value}
                   keyboardType="numeric"
                 />
               </View>
@@ -258,21 +265,27 @@ const SellItemPage: React.FC = () => {
           />
         </View>
         <View style={styles.errorContainer}>
-          {formErrors.price && <Text style={styles.errorText}>{formErrors.price.message}</Text>}
+          {errors.price && <Text style={styles.errorText}>{errors.price.message}</Text>}
         </View>
         <View>
           <Text style={styles.title}>标签</Text>
         </View>
         <View style={styles.tagContainer}>
-          <TextInput
-            style={styles.tagInput}
-            placeholder="打上标签让更多人看见"
-            value={tagInputValue}
-            onChangeText={handleTagInputChange}
-            onSubmitEditing={() => handleTagInputChange(tagInputValue + '\n')}
+          <Controller
+            control={control}
+            name="tagInput"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                style={styles.tagInput}
+                placeholder="打上标签让更多人看见"
+                value={value}
+                onChangeText={(text) => handleTagInputChange(text, onChange)}
+                onSubmitEditing={() => handleTagInputChange(value + '\n', onChange)}
+              />
+            )}
           />
           <View style={styles.tagList}>
-            {tags.map((tag, index) => (
+            {watch('tags')?.map((tag, index) => (
               <View key={index} style={styles.tag}>
                 <Text style={styles.tagText}>{tag}</Text>
                 <TouchableOpacity onPress={() => removeTag(index)}>
@@ -281,6 +294,9 @@ const SellItemPage: React.FC = () => {
               </View>
             ))}
           </View>
+        </View>
+        <View style={styles.errorContainer}>
+          {errors.tags && <Text style={styles.errorText}>{errors.tags.message}</Text>}
         </View>
       </ScrollView>
     </View>
@@ -397,7 +413,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: 10,
-    marginBottom:30,
   },
   tag: {
     flexDirection: 'row',
