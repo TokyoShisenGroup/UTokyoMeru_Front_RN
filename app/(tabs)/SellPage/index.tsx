@@ -10,18 +10,17 @@ import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import Tag from '@/components/goodspage/Tag'
 
 type FormData = {
   title: string;
   description: string;
   price: string;
-  tags: string;
 };
 
 const SellItemPage: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [tagInputValue, setTagInputValue] = useState('');
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
   const { errors: formErrors } = useFormState({ control });
 
@@ -60,36 +59,36 @@ const SellItemPage: React.FC = () => {
 
   const uploadImage = async (uri: string) => {
     try {
-       // 获取文件信息
-        const fileInfo = await FileSystem.getInfoAsync(uri);
-        const compressedUri = await compressImage(uri);
-        // 创建 FormData 对象
-        const formData = new FormData();
-        
-        // 从 uri 中提取文件名
-        const fileName = uri.split('/').pop() || 'image.jpg';
-        
-        // 创建一个 Blob 对象
-        const file = {
-          uri: compressedUri,
-          type: 'image/jpeg',
-          name: fileName,
-        };
-        
-        // 将文件添加到 FormData 中
-        formData.append('file', file as any);
+      // 获取文件信息
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      const compressedUri = await compressImage(uri);
+      // 创建 FormData 对象
+      const formData = new FormData();
+      
+      // 从 uri 中提取文件名
+      const fileName = uri.split('/').pop() || 'image.jpg';
+      
+      // 创建一个 Blob 对象
+      const file = {
+        uri: compressedUri,
+        type: 'image/jpeg',
+        name: fileName,
+      };
+      
+      // 将文件添加到 FormData 中
+      formData.append('file', file as any);
 
-        console.log("上传图片中");
-        // 使用 axios 发送请求
-        const response = await axios.post(`${UPLOAD_IMAGE_URL}/upload`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            "Authorization": "442|qEMVdJ9LdcBzKdfVazvKlxWGozesLZMKNxw4AQEQ",
-          },
-        });
+      console.log("上传图片中");
+      // 使用 axios 发送请求
+      const response = await axios.post(`${UPLOAD_IMAGE_URL}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "Authorization": "442|qEMVdJ9LdcBzKdfVazvKlxWGozesLZMKNxw4AQEQ",
+        },
+      });
 
-        console.log('解析后的结果：', response.data);
-        return response.data.message.url;
+      console.log('解析后的结果：', response.data);
+      return response.data.message.url;
     } catch (error) {
       console.error('图片上传错误：', error);
       throw error;
@@ -113,6 +112,7 @@ const SellItemPage: React.FC = () => {
       const postData = {
         ...data,
         images: uploadedImageUrls,
+        tags: tags,
         seller: 1,
         is_invisible: false,
         is_deleted: false,
@@ -134,6 +134,22 @@ const SellItemPage: React.FC = () => {
       console.error('提交表单错误：', error);
       Alert.alert('发布失败', '请稍后重试');
     }
+  };
+
+  const handleTagInputChange = (text: string) => {
+    if (text.endsWith(' ') || text.endsWith(',') || text.endsWith('\n')) {
+      const newTag = text.trim().replace(/,|\s/g, '');
+      if (newTag !== '') {
+        setTags([...tags, newTag]);
+      }
+      setTagInputValue('');
+    } else {
+      setTagInputValue(text);
+    }
+  };
+
+  const removeTag = (index: number) => {
+    setTags(prevTags => prevTags.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
@@ -247,19 +263,25 @@ const SellItemPage: React.FC = () => {
         <View>
           <Text style={styles.title}>标签</Text>
         </View>
-        <Controller
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.tagInput}
-              placeholder="打上标签让更多人看见"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-          name="tags"
-        />
+        <View style={styles.tagContainer}>
+          <TextInput
+            style={styles.tagInput}
+            placeholder="打上标签让更多人看见"
+            value={tagInputValue}
+            onChangeText={handleTagInputChange}
+            onSubmitEditing={() => handleTagInputChange(tagInputValue + '\n')}
+          />
+          <View style={styles.tagList}>
+            {tags.map((tag, index) => (
+              <View key={index} style={styles.tag}>
+                <Text style={styles.tagText}>{tag}</Text>
+                <TouchableOpacity onPress={() => removeTag(index)}>
+                  <Text style={styles.tagDelete}>X</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </View>
       </ScrollView>
     </View>
   );
@@ -358,14 +380,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxWidth: wp(80),
   },
+  tagContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginTop: 10,
+  },
   tagInput: {
     height: 40,
     width: wp(87),
     borderColor: '#ddd',
     borderBottomWidth: 2,
     borderRadius: 5,
-    marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  tagList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10,
+    marginBottom:30,
+  },
+  tag: {
+    flexDirection: 'row',
+    backgroundColor: '#e0e0e0',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 15,
+    marginRight: 5,
+    marginBottom: 5,
+    alignItems: 'center',
+  },
+  tagText: {
+    marginRight: 5,
+  },
+  tagDelete: {
+    color: '#888',
+    fontWeight: 'bold',
   },
   errorText: {
     color: 'red',
