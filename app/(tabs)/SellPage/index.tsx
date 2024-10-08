@@ -3,12 +3,14 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView,
 import { Header } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useFormState } from 'react-hook-form';
 import { router } from 'expo-router';
 import { UPLOAD_IMAGE_URL, API_URL } from '@/constants/config';
 import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Tag from '@/components/goodspage/Tag'
 
 type FormData = {
   title: string;
@@ -19,7 +21,9 @@ type FormData = {
 
 const SellItemPage: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const { errors: formErrors } = useFormState({ control });
 
   const selectImage = async () => {
     try {
@@ -30,13 +34,19 @@ const SellItemPage: React.FC = () => {
       });
 
       if (!result.canceled) {
-        const uris = result.assets.map((asset) => asset.uri);
-        console.log(uris);
-        setImages(uris);
+        const newImages = result.assets.map((asset) => asset.uri);
+        setImages(prevImages => {
+          const updatedImages = [...prevImages, ...newImages];
+          return updatedImages.slice(0, 9);
+        });
       }
     } catch (error) {
       console.error('图片选择错误：', error);
     }
+  };
+
+  const deleteImage = (index: number) => {
+    setImages(prevImages => prevImages.filter((_, i) => i !== index));
   };
 
   const compressImage = async (uri: string) => {
@@ -67,34 +77,19 @@ const SellItemPage: React.FC = () => {
         };
         
         // 将文件添加到 FormData 中
-        formData.append('image', file as any);
+        formData.append('file', file as any);
 
         console.log("上传图片中");
-        // 发送请求
-        const response = await fetch(`${UPLOAD_IMAGE_URL}/upload`, {
-          method: 'POST',
-          body: formData,
+        // 使用 axios 发送请求
+        const response = await axios.post(`${UPLOAD_IMAGE_URL}/upload`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
-            "Authorization": "14ac5499cfdd2bb2859e4476d2e5b1d2bad079bf",
+            "Authorization": "442|qEMVdJ9LdcBzKdfVazvKlxWGozesLZMKNxw4AQEQ",
           },
         });
 
-    
-      // 获取原始响应文本
-      const responseText = await response.text();
-
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error('JSON 解析错误：', parseError);
-        console.error('无法解析的响应内容：', responseText);
-        throw new Error('服务器返回了无效的 JSON 数据');
-      }
-
-      console.log('解析后的结果：', result);
-      return result.Images;
+        console.log('解析后的结果：', response.data);
+        return response.data.message.url;
     } catch (error) {
       console.error('图片上传错误：', error);
       throw error;
@@ -177,10 +172,13 @@ const SellItemPage: React.FC = () => {
             )}
             name="title"
           />
-          {errors.title && <Text style={styles.errorText}>{errors.title.message}</Text>}
+        </View>
+        <View style={styles.errorContainer}>
+          {formErrors.title && <Text style={styles.errorText}>{formErrors.title.message}</Text>}
         </View>
         <View style={styles.descriptionContainer}>
           <Text style={styles.title}>商品描述</Text>
+          
           <Controller
             control={control}
             rules={{ required: '商品描述不能为空' }}
@@ -197,40 +195,55 @@ const SellItemPage: React.FC = () => {
             )}
             name="description"
           />
-          {errors.description && <Text style={styles.errorText}>{errors.description.message}</Text>}
-          
-          {images.length > 0 ? (
-            <TouchableOpacity style={styles.imageUpload} onPress={selectImage}>
-              {images.map((image, index) => (
-              <Image key={index} source={{ uri: image }} style={styles.previewImage} />
+          <ScrollView horizontal style={styles.imageScrollView}>
+            {images.map((image, index) => (
+              <View key={index} style={styles.imageWrapper}>
+                <Image source={{ uri: image }} style={styles.previewImage} />
+                <TouchableOpacity 
+                  style={styles.deleteButton} 
+                  onPress={() => deleteImage(index)}
+                >
+                  <Text style={styles.deleteButtonText}>X</Text>
+                </TouchableOpacity>
+              </View>
             ))}
-             </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.imageUpload} onPress={selectImage}>
-              <Text style={styles.uploadText}>+</Text>
-            </TouchableOpacity>
-          )}
-         
+            {images.length < 9 && (
+              <TouchableOpacity style={styles.addImageButton} onPress={selectImage}>
+                <Text style={styles.uploadText}>+</Text>
+              </TouchableOpacity>
+            )}
+          </ScrollView>
+          
+        </View>
+        <View style={styles.errorContainer}>
+          {formErrors.description && <Text style={styles.errorText}>{formErrors.description.message}</Text>}
         </View>
         <View>
           <Text style={styles.title}>价格</Text>
         </View>
-        <Controller
-          control={control}
-          rules={{ required: '价格不能为空' }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              placeholder="定个价"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              keyboardType="numeric"
-            />
-          )}
-          name="price"
-        />
-        {errors.price && <Text style={styles.errorText}>{errors.price.message}</Text>}
+        <View>
+          <Controller
+            control={control}
+            rules={{ required: '价格不能为空' }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <View style={styles.priceContainer}>
+                <Text style={{fontSize: 26}}>￥</Text>
+                <TextInput
+                  style={styles.priceInput}
+                  placeholder="定个价"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  keyboardType="numeric"
+                />
+              </View>
+            )}
+            name="price"
+          />
+        </View>
+        <View style={styles.errorContainer}>
+          {formErrors.price && <Text style={styles.errorText}>{formErrors.price.message}</Text>}
+        </View>
         <View>
           <Text style={styles.title}>标签</Text>
         </View>
@@ -238,7 +251,7 @@ const SellItemPage: React.FC = () => {
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              style={styles.input}
+              style={styles.tagInput}
               placeholder="打上标签让更多人看见"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -271,8 +284,6 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     height: hp(40),
-    marginBottom: 20,
-    marginTop: 20,
   },
   descriptionInput: {
     flex: 1,
@@ -281,11 +292,46 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     backgroundColor: '#fff',
   },
-  imageUpload: {
+  errorContainer: {
+    marginBottom: 10,
+  },
+  imageScrollView: {
     flexDirection: 'row',
     position: 'absolute',
     left: 10,
     bottom: 10,
+  },
+  imageWrapper: {
+    width: 80,
+    height: 80,
+    marginRight: 6,
+    borderColor: '#ddd',
+    borderWidth: 2,
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  previewImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 5,
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  addImageButton: {
     width: 80,
     height: 80,
     justifyContent: 'center',
@@ -294,17 +340,27 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 5,
   },
-  previewImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 5,
+  uploadText: {
+    fontSize: 24,
+    color: '#ddd',
   },
-  imageContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  input: {
+  priceInput: {
     height: 40,
+    width: wp(80),
+    borderColor: '#ddd',
+    borderBottomWidth: 2,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    maxWidth: wp(80),
+  },
+  tagInput: {
+    height: 40,
+    width: wp(87),
     borderColor: '#ddd',
     borderBottomWidth: 2,
     borderRadius: 5,
@@ -325,10 +381,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-  },
-  uploadText: {
-    fontSize: 24,
-    color: '#ddd',
   },
 });
 
