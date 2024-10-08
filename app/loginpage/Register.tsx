@@ -9,6 +9,7 @@ import axios from 'axios'; // 需要安装 axios
 import Header from '@/components/mypage/Header';
 import { getPrefList, getCities } from '@/utils/getAddress';
 import { API_URL } from '@/constants/config'; 
+import storageApi from '@/lib/storageApi';
 
 // 日本的都道府县列表
 const prefectures = [
@@ -131,11 +132,16 @@ const RegisterScreen = () => {
       }
     }
     try {
-      const response = await axios.post(`${API_URL}/register`, sendData);
+      console.log("sendData");
+      console.log(sendData);
+      const response = await axios.post(`${API_URL}/v1/signup`, sendData);
       
       if (response.status === 200) {
         Alert.alert('注册成功', '您已成功注册！');
         router.push('/loginpage/Login');
+        await storageApi.saveToken(response.data.token);
+        await storageApi.saveUserMailaddress(response.data.user_mailaddress);
+        await storageApi.saveUserName(response.data.user_name);
       } else if (response.status === 400) {
         Alert.alert('注册失败', '验证码错误');
       } else if (response.status === 500) {
