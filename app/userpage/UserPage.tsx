@@ -9,7 +9,7 @@ import UserInfoArea from '@/components/userpage/UserInfoArea';
 
 const UserPage: React.FC<UserDisplayProps> = () =>{
     return (
-        <SafeAreaView style={{marginBottom: 130}}>
+        <SafeAreaView>
             <Header title="" />
             <ScrollView>
             <UserInfoArea 
