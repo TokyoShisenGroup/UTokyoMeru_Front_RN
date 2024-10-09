@@ -130,16 +130,7 @@ const Login: React.FC = () => {
   };
 
   if (isLoggedIn) {
-    return (
-      <SafeAreaView style={styles.safeArea}>
-        <Header title="已登录" onBackPress={handleBackPress} />
-        <View style={styles.container}>
-          <Text style={styles.title}>你已经登录了！</Text>
-        </View>
-        {/* 注销按钮 还需要setlogin为false*/}
-        <Button onPress={logout}>注销</Button>
-      </SafeAreaView>
-    );
+    router.navigate("/");
   }
 
   return (

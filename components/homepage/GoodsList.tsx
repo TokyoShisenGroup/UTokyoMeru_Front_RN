@@ -30,7 +30,7 @@ const Column: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
   );
 };
 
-const GoodsList = () => {
+const GoodsList: React.FC<{uri: string}> = ({uri}) => {
   const {leftColumn: l, rightColumn: r} = splitDataIntoColumns([]);
 
   const [leftColumn, setLeftColumn] = useState<GoodPropsSimplified[]>(l);
@@ -39,7 +39,7 @@ const GoodsList = () => {
 
   const fetchMoreGoods = async () => {
     try {
-      const response = await axios.get(`${API_URL}/goods`);
+      const response = await axios.get(`${API_URL}/${uri}`);
       const {leftColumn: l, rightColumn: r} = splitDataIntoColumns(response.data);
       setLeftColumn(l);
       setRightColumn(r);

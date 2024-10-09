@@ -9,7 +9,7 @@ function HomeScreen() {
   return (
     <SafeAreaView>
       <ISearchBar onSearch={()=>{console.log("Hello")}}/>
-      <GoodsList />
+      <GoodsList uri="goods" />
     </SafeAreaView>
   );
 }
