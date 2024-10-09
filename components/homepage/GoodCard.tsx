@@ -35,25 +35,25 @@ const GoodCard: React.FC<GoodCardProps> = ({item}) => {
     <View style={styles.cardContainer}>
       <TouchableOpacity
         onPress={() => {
-          console.log("Pressed card with id:", item.GoodID);
+          console.log("Pressed card with id:", item.good_id);
           router.push({
             pathname: "/goodspage/GoodsDetail",
-            params: { id: item.GoodID }
+            params: { id: item.good_id }
           });
         }}>
         <Card containerStyle={styles.card}>
-          <DynamicImage uri={item.Images[0]} />
+          <DynamicImage uri={item.images[0]} />
           <Text style={styles.description} numberOfLines={3}>
-            {item.Description}
+            {item.description}
           </Text>
-          <Text style={styles.price}>¥ {item.Price}</Text>
+          <Text style={styles.price}>¥ {item.price}</Text>
           <View style={styles.user}>
             <Image
               style={styles.avatar}
               resizeMode="cover"
-              source={{uri: item.User?.Avatar ||"https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg"}}
+              source={{uri: item.user?.Avatar ||"https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg"}}
             />
-            <Text style={styles.name}>{item.User?.Name||"匿名"}</Text>
+            <Text style={styles.name}>{item.user?.Name||"匿名"}</Text>
           </View>
         </Card>
       </TouchableOpacity>

@@ -24,7 +24,7 @@ const Column: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
   return (
     <FlatList
       data={data}
-      keyExtractor={item => item.GoodID}
+      keyExtractor={item => item.good_id}
       renderItem={({item}) => <GoodCard item={item} />}
     />
   );

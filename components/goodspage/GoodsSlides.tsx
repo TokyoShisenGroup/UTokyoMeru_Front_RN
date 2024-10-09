@@ -10,8 +10,8 @@ const GoodsSlides: React.FC<GoodProps> = (props) => {
   const [selectedImage, setSelectedImage] = useState('');
 
   useEffect(() => {
-    setImagesLoaded(new Array(props.Images.length).fill(false));
-  }, [props.Images]);
+    setImagesLoaded(new Array(props.images.length).fill(false));
+  }, [props.images]);
 
   const handleImageLoad = (index: number) => {
     setImagesLoaded(prev => {
@@ -38,7 +38,7 @@ const GoodsSlides: React.FC<GoodProps> = (props) => {
         loadMinimal={true}
         loadMinimalSize={1}
       >
-        {props.Images.map((image, index) => (
+        {props.images.map((image, index) => (
           <TouchableOpacity key={index} onPress={() => openModal(image)} style={styles.slide}>
             {!imagesLoaded[index] && (
               <View style={styles.loadingContainer}>
