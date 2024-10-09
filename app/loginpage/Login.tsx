@@ -117,7 +117,7 @@ const Login: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await axios.post(`${API_URL}/v1/login`, data);
+      const response = await axios.post(`${API_URL}/login/password`, data);
       console.log("response");
       console.log(response.data);
       await storageApi.saveToken(response.data.token);
