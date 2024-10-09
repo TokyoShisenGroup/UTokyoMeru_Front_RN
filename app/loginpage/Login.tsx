@@ -8,6 +8,7 @@ import { API_URL } from '@/constants/config';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import storageApi from '@/lib/storageApi';
 import { Button } from '@rneui/base';
+import Reset from '@/components/loginpage/Reset';
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -104,9 +105,6 @@ const Login: React.FC = () => {
         setIsLoggedIn(true);
         Alert.alert('你已经是登录状态了');
       }
-      else {
-        Alert.alert("你还没有登录");
-      }
     };
     checkLoginStatus();
   }, []);
@@ -117,14 +115,13 @@ const Login: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await axios.post(`${API_URL}/v1/login`, data);
+      const response = await axios.post(`${API_URL}/login/password`, data);
       console.log("response");
       console.log(response.data);
       await storageApi.saveToken(response.data.token);
       await storageApi.saveUserMailaddress(response.data.user_mailaddress);
       await storageApi.saveUserName(response.data.user_name);
       setIsLoggedIn(true); // 登录成功后更新状态
-      Alert.alert("你登录成功了");
     } catch (error) {
       console.error('登录失败:', error);
       Alert.alert('登录失败', '发生了一个错误，请稍后重试');
@@ -199,9 +196,7 @@ const Login: React.FC = () => {
               <Text style={styles.registerButtonText}>注册</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => console.log("忘记密码")}>
-            <Text style={styles.forgetPassword}>忘记密码？</Text>
-          </TouchableOpacity>
+          <Reset />
         </View>
       </View>
     </SafeAreaView>
