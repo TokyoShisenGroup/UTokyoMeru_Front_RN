@@ -1,46 +1,73 @@
 import { API_URL } from '@/constants/config';
+import storageApi, { TOKEN_KEY } from '@/lib/storageApi';
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet,
   SectionList, Alert, ActivityIndicator,
 } from 'react-native';
-import { Button } from 'react-native-elements';
-import useSWR ,{mutate} from 'swr';
-
-
-
 
 const TestButton = () => {
+  storageApi.init();
   const { user, isError, isLoading } = useUser();
-  // console.log(user)
+  // console.log(user);
+
   return (
     <View>
       <Text>"abc"</Text>
     </View>
-  )
-}
+  );
+};
 
-const fetcher = (url: string, init?: RequestInit) => {
+// 使用 fetch 发起请求
+const fetcher = async (url: string) => {
+  try {
+    console.log(`Bearer ${TOKEN_KEY}`)
 
-  return  fetch(url, init).then(
-    res => res.json()
-  ).then(data => {
-    console.log(data)
-    return data
-  }).catch(error => {
-    console.log(error)
-  })
-}
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        "Authorization": `Bearer ${TOKEN_KEY}`, // 设置 Authorization 头
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('响应数据: ', data);
+    return data;
+  } catch (error) {
+    console.error('网络请求失败', error);
+    throw new Error('网络请求失败');
+  }
+};
 
 function useUser() {
-//   console.log(API_URL+"/admin/users/")
-  const { data, error, isLoading } = useSWR(API_URL+"/admin/users/", fetcher);
-  // console.log(data)
-  // console.log(error)
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetcher(`${API_URL}/admin/users/`);
+        setUser(data);
+        setIsError(false);
+      } catch (error) {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []); // 空依赖数组确保只在初始渲染时调用
+
   return {
-    user: data,
+    user,
     isLoading,
-    isError: error,
+    isError,
   };
 }
 
@@ -69,17 +96,15 @@ const AdminControl: React.FC = () => {
   const [loadingGoods, setLoadingGoods] = useState<boolean>(false);
 
   useEffect(() => {
-    // 您可以在这里调用获取数据的函数
+    // 调用获取数据的函数
     fetchUsers();
     fetchGoods();
   }, []);
 
-  // 示例数据获取函数
+  // 获取用户数据
   const fetchUsers = async () => {
     try {
       setLoadingUsers(true);
-      // 获取用户数据逻辑
-      // setUsers(response.data);
 
       // 示例数据
       const exampleUsers: User[] = [
@@ -95,11 +120,10 @@ const AdminControl: React.FC = () => {
     }
   };
 
+  // 获取商品数据
   const fetchGoods = async () => {
     try {
       setLoadingGoods(true);
-      // 获取商品数据逻辑
-      // setGoods(response.data);
 
       // 示例数据
       const exampleGoods: Goods[] = [
@@ -149,13 +173,10 @@ const AdminControl: React.FC = () => {
     },
   ];
 
-
-
   const renderItem = ({ item }: { item: User | Goods }) => {
     if ('email' in item) {
       // 用户项
       return (
-        
         <View style={styles.itemContainer}>
           <Text>{item.name} ({item.email})</Text>
           <TouchableOpacity onPress={() => deleteUser(item.id)}>
