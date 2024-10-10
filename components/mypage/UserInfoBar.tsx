@@ -5,9 +5,10 @@ import {router} from 'expo-router';
 
 
 const UserInfoBar: React.FC<UserDisplayProps> = ({Name: name, Avatar: avatar}) =>{
+    
     return (
         <TouchableOpacity onPress={() => {
-          router.push('/loginpage/Login');
+          router.push(`/userpage/UserPage`);
         }}>
         <View style={styles.userInfoBar}>
         <Image

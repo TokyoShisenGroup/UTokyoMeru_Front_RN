@@ -33,6 +33,7 @@ export default function RootLayout() {
         <Stack.Screen name="goodspage/GoodsDetail" options={{ headerShown: false }} />
         <Stack.Screen name="loginpage/Login" options={{ headerShown: false }} />
         <Stack.Screen name="loginpage/Register" options={{ headerShown: false }} />
+        <Stack.Screen name="userpage/UserPage" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="mypage/AdminControl" options={{ headerShown: false }} />
       </Stack>
