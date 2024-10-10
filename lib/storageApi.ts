@@ -25,9 +25,9 @@ const storage = new Storage({
 // 封装API方法
 const storageApi = {
   init: async (): Promise<void> => {
-    TOKEN_KEY = await storageApi.load("token");
-    USERMAILADDRESS_KEY = await storageApi.load("usermailaddress");
-    USERNAME_KEY = await storageApi.load("username");
+    // TOKEN_KEY = await storageApi.load("token");
+    // USERMAILADDRESS_KEY = await storageApi.load("usermailaddress");
+    // USERNAME_KEY = await storageApi.load("username");
   },
   // 存储数据
   save: async (key: string, data: StorageData): Promise<void> => {
