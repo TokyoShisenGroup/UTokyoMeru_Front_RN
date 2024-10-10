@@ -1,8 +1,48 @@
+import { API_URL } from '@/constants/config';
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet,
   SectionList, Alert, ActivityIndicator,
 } from 'react-native';
+import { Button } from 'react-native-elements';
+import useSWR ,{mutate} from 'swr';
+
+
+
+
+const TestButton = () => {
+  const { user, isError, isLoading } = useUser();
+  // console.log(user)
+  return (
+    <View>
+      <Text>"abc"</Text>
+    </View>
+  )
+}
+
+const fetcher = (url: string, init?: RequestInit) => {
+
+  return  fetch(url, init).then(
+    res => res.json()
+  ).then(data => {
+    console.log(data)
+    return data
+  }).catch(error => {
+    console.log(error)
+  })
+}
+
+function useUser() {
+//   console.log(API_URL+"/admin/users/")
+  const { data, error, isLoading } = useSWR(API_URL+"/admin/users/", fetcher);
+  // console.log(data)
+  // console.log(error)
+  return {
+    user: data,
+    isLoading,
+    isError: error,
+  };
+}
 
 // 定义类型
 type User = {
@@ -109,10 +149,13 @@ const AdminControl: React.FC = () => {
     },
   ];
 
+
+
   const renderItem = ({ item }: { item: User | Goods }) => {
     if ('email' in item) {
       // 用户项
       return (
+        
         <View style={styles.itemContainer}>
           <Text>{item.name} ({item.email})</Text>
           <TouchableOpacity onPress={() => deleteUser(item.id)}>
@@ -139,6 +182,7 @@ const AdminControl: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <TestButton />
       {(loadingUsers || loadingGoods) ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (

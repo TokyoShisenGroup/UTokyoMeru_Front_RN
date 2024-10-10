@@ -24,6 +24,7 @@
     "@rneui/base": "^4.0.0-rc.8",
     "@rneui/themed": "^4.0.0-rc.8",
     "@types/react-native-snap-carousel": "^3.8.11",
+    "add": "^2.0.6",
     "antd": "^5.20.6",
     "axios": "^1.7.7",
     "exceljs": "^4.4.0",
@@ -59,6 +60,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-waterfall-flow": "^1.1.5",
     "react-native-web": "~0.19.10",
+    "swr": "^2.2.5",
     "yarn": "^1.22.22"
   },
   "devDependencies": {

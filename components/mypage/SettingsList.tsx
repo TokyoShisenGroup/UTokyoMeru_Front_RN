@@ -20,34 +20,53 @@ const SettingsList = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      const checkAdminStatus = async () => {
+      console.log("焦点")
+      const checkLoginStatus = async () => {
         const userEmail = await storageApi.getUserMailaddress();
-        if (userEmail && await whetherAdmin(userEmail)) {
-          setSettingsList(prevList => {
-            // 确保不重复添加“管理员视图”项
-            const hasAdminView = prevList.some(item => item.title === '管理员视图');
-            if (!hasAdminView) {
-              return [
-                ...prevList,
-                {
-                  title: '管理员视图',
-                  icon: 'settings',
-                  onPress: () => router.push({pathname: "/mypage/AdminControl" }),
-                },
-              ];
+
+        if (userEmail) {
+          // 用户已登录，添加注销选项
+          let updatedList = [...initialSettingsList, {
+            title: '注销',
+            icon: 'log-out-outline',
+            onPress: () => {
+              storageApi.clearAll()
+              router.push({ pathname: "/" })
             }
-            return prevList;
-          });
-        }
-        else{
-          setSettingsList(initialSettingsList)
+
+          }];
+
+          // 检查是否为管理员
+          if (await whetherAdmin(userEmail)) {
+            updatedList = [
+              ...updatedList,
+              {
+                title: '管理员视图',
+                icon: 'settings',
+                onPress: () => router.push({ pathname: "/mypage/AdminControl" }),
+              },
+            ];
+          }
+
+          setSettingsList(updatedList);
+        } else {
+          // 用户未登录，显示登录选项
+          setSettingsList([
+            ...initialSettingsList,
+            {
+              title: '登录',
+              icon: 'log-in-outline',
+              onPress: () => router.push({ pathname: "/loginpage/Login" }),
+            },
+          ]);
         }
       };
-      checkAdminStatus();
+      console.log(settingsList)
+      checkLoginStatus();
 
       // 可选：返回一个清理函数，当屏幕失去焦点时执行
       return () => {
-        // 如果需要在屏幕失去焦点时执行任何清理工作，可以在这里添加
+        // 清理逻辑
       };
     }, [])
   );

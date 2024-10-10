@@ -93,6 +93,7 @@ type FormData = {
 const Login: React.FC = () => {
   const { control, handleSubmit } = useForm<FormData>();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // storageApi.clearAll()
   const logout = () => {
     storageApi.clearAll();
     setIsLoggedIn(false);
@@ -100,8 +101,8 @@ const Login: React.FC = () => {
   useEffect(() => {
     // 检查是否已经登录
     const checkLoginStatus = async () => {
-      const userName = await storageApi.load('username');
-      if (userName !== "") {
+      const userMailaddress = await storageApi.getUserMailaddress()
+      if (userMailaddress !== "") {
         setIsLoggedIn(true);
         Alert.alert('你已经是登录状态了');
       }
@@ -115,12 +116,15 @@ const Login: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
+      console.log(`${API_URL}/login/password`)
+      console.log(data)
       const response = await axios.post(`${API_URL}/login/password`, data);
       console.log("response");
       console.log(response.data);
       await storageApi.saveToken(response.data.token);
-      await storageApi.saveUserMailaddress(response.data.user_mailaddress);
+      await storageApi.saveUserMailaddress(response.data.mail_address);
       await storageApi.saveUserName(response.data.user_name);
+      await storageApi.saveUserId(response.data.id);
       setIsLoggedIn(true); // 登录成功后更新状态
     } catch (error) {
       console.error('登录失败:', error);

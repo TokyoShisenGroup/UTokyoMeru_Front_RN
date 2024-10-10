@@ -96,16 +96,16 @@ const storageApi = {
     return await storageApi.load("username");
   },
   saveToken: async (token: string): Promise<void> => {
-    await storageApi.save("token", "");
     await storageApi.save("token", token);
   },
-  saveUserMailaddress: async (user_mailaddress: string): Promise<void> => {
-    await storageApi.save("token", "");
-    await storageApi.save("usermailaddress", user_mailaddress);
+  saveUserMailaddress: async (User_Mailaddress: string): Promise<void> => {
+    await storageApi.save("usermailaddress", User_Mailaddress);
   },
-  saveUserName: async (user_name: string): Promise<void> => {
-    await storageApi.save("token", "");
-    await storageApi.save("username", user_name);
+  saveUserName: async (User_Name: string): Promise<void> => {
+    await storageApi.save("username", User_Name);
+  },
+  saveUserId: async (User_Id: string): Promise<void> => {
+    await storageApi.save("userid", User_Id);
   }
 };
 
