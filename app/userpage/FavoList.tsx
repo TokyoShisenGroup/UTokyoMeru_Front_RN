@@ -5,14 +5,21 @@ import List from '@/components/favolist/List';
 import useSWR from 'swr';
 import axios from 'axios';
 import { API_URL } from '@/constants/config';
+import storageApi from '@/lib/storageApi';
 
 const fetcher = async (url: string) => {
-    const res = await axios.get(url);
+    const token = await storageApi.getToken();
+    console.log(token);
+    const res = await axios.get(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+    });
     return res.data;
 }
 
 const FavoList = () => {
-    const {data, error, isLoading} = useSWR(`${API_URL}/goods`, fetcher);
+    const {data, error, isLoading} = useSWR(`${API_URL}/user/favolist`, fetcher);
 
     if (error) {
         console.log(error);
