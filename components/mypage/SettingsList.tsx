@@ -64,13 +64,14 @@ const SettingsList = () => {
 const styles = StyleSheet.create({
     settingsContainer: {
       marginTop: 20,
+      borderRadius: 10,
+      backgroundColor: 'white',
     },
     settingItem: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: 15,
-      backgroundColor: 'white',
       borderBottomWidth: 1,
       borderBottomColor: '#e0e0e0',
     },

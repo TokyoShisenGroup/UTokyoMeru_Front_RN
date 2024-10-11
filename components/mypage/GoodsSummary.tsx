@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { router } from "expo-router";
 
 const GoodsSummary = () => {
     return (
@@ -16,7 +17,7 @@ const GoodsSummary = () => {
                 <Text style={styles.number}>0</Text>
                 <Text style={styles.text}>我买到的</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => console.log('我收藏的')}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/userpage/FavoList')}>
                 <Text style={styles.number}>0</Text>
                 <Text style={styles.text}>我收藏的</Text>
             </TouchableOpacity>
@@ -30,6 +31,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginTop: 20,
         backgroundColor: '#fff',
+        borderRadius: 10,
     },
     button: {
         flex: 1,
