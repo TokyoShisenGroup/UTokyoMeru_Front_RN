@@ -38,7 +38,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ avatarUrl, username, bio, rating, o
         </View>
         <View style={styles.expandButtonRow}>
           <TouchableOpacity onPress={() => setIsBioExpanded(!isBioExpanded)} style={styles.expandButtonContainer}>
-            <Text style={styles.expandButton}>{isBioExpanded ? "收起" : "展开"}</Text>
+            <Text style={styles.expandButton}>{isBioExpanded ? "▲ 收起" : "▼ 展开"}</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   const navigation = useNavigation();
 
   return (
-    <View style={[styles.container, { paddingTop: 0 }]}>
+    <View style={[styles.container]}>
       <View style={styles.content}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.button}>
           <Ionicons name="chevron-back" size={24} color="black" />
@@ -32,6 +32,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 0,
   },
   content: {
     flexDirection: 'row',
