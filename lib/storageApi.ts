@@ -104,6 +104,14 @@ const storageApi = {
     await storageApi.init();
     return await storageApi.load("username");
   },
+  getUserId: async (): Promise<string | null> => {
+    if (await storageApi.load("userid") === "") {
+      console.log("userid not found");
+      return "";
+    }
+    await storageApi.init();
+    return await storageApi.load("userid");
+  },
   saveToken: async (token: string): Promise<void> => {
     await storageApi.save("token", token);
     await storageApi.init();
@@ -118,6 +126,7 @@ const storageApi = {
   },
   saveUserId: async (User_Id: string): Promise<void> => {
     await storageApi.save("userid", User_Id);
+    console.log("用户的id是", User_Id);
     await storageApi.init();
   }
 };

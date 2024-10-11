@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';  
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import storageApi from '@/lib/storageApi';
 import { whetherAdmin } from '@/utils/webRequest';
@@ -43,7 +43,7 @@ const SettingsList = () => {
               {
                 title: '管理员视图',
                 icon: 'settings',
-                onPress: () => router.push({ pathname: "/mypage/AdminControl" }),
+                onPress: () => router.push({ pathname: "/adminpage/AdminControl" }),
               },
             ];
           }

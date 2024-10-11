@@ -10,6 +10,8 @@ import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import SMMSApiClient from '@/lib/imageApi';
+import storageApi from "@/lib/storageApi"; // 请确保路径正确
 
 type FormData = {
   title: string;
@@ -27,6 +29,8 @@ const SellItemPage: React.FC = () => {
       tagInput: '',
     },
   });
+  const APITOKEN = "1p4sVu5JstjtNfFh4lpQsqFtlgiS1DLa"
+  const smmsClient = new SMMSApiClient(APITOKEN);
 
   const selectImage = async () => {
     try {
@@ -63,36 +67,19 @@ const SellItemPage: React.FC = () => {
 
   const uploadImage = async (uri: string) => {
     try {
-      // 获取文件信息
-      const fileInfo = await FileSystem.getInfoAsync(uri);
       const compressedUri = await compressImage(uri);
-      // 创建 FormData 对象
-      const formData = new FormData();
 
-      // 从 uri 中提取文件名
-      const fileName = uri.split('/').pop() || 'image.jpg';
+      // 使用 SMMSApiClient 上传图片
+      const uploadData = await smmsClient.uploadImage(compressedUri);
 
-      // 创建一个 Blob 对象
-      const file = {
-        uri: compressedUri,
-        type: 'image/jpeg',
-        name: fileName,
-      };
-
-      // 将文件添加到 FormData 中
-      formData.append('file', file as any);
-
-      console.log("上传图片中");
-      // 使用 axios 发送请求
-      const response = await axios.post(`${UPLOAD_IMAGE_URL}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          "Authorization": "442|qEMVdJ9LdcBzKdfVazvKlxWGozesLZMKNxw4AQEQ",
-        },
-      });
-
-      console.log('解析后的结果：', response.data);
-      return response.data.message.url;
+      console.log('上传成功：', uploadData);
+      console.log(typeof uploadData)
+      // 返回图片的 URL
+      if(uploadData.data != undefined)
+        return uploadData.data.url;
+      else if ((uploadData as any).images !== undefined) {
+        return (uploadData as any).images as string;
+      }
     } catch (error) {
       console.error('图片上传错误：', error);
       throw error;
@@ -103,6 +90,7 @@ const SellItemPage: React.FC = () => {
     const uploadedUrls = [];
     for (const image of images) {
       const url = await uploadImage(image);
+      console.log("插入数组的地址 ",url)
       uploadedUrls.push(url);
     }
     return uploadedUrls;
@@ -129,15 +117,14 @@ const SellItemPage: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // const uploadedImageUrls = await uploadImages(images);
-      const uploadedImageUrls = [] as string[]
+      const uploadedImageUrls = await uploadImages(images);
       // 移除 tagInput
       const { tagInput, ...restData } = data;
-
+      console.log("image: ",uploadedImageUrls)
       const postData = {
         ...restData,
         images: uploadedImageUrls,
-        sellerid: 1,
+        seller_id: await storageApi.getUserId(),
         is_invisible: false,
         is_deleted: false,
         is_bought: false,
@@ -145,14 +132,18 @@ const SellItemPage: React.FC = () => {
       postData.price = Number(postData.price)
 
       console.log('表单数据汇总：', postData);
-      const response = await axios.post(`${API_URL}/goods/`, postData);
+      const response = await axios.post(`${API_URL}/goods/`, postData,
+          {  headers: {
+            'Authorization': `Bearer ${await storageApi.getToken() as string}`, // 使用获取的 API Token
+      }}
+          );
       // const response = await axios.get(`${API_URL}/goods`)
       console.log("商品发布成功");
       console.log(response.data)
-      console.log('商品id：', response.data.ID);
+      console.log('商品id：', response.data.good_info.ID);
       router.push({
         pathname: "/goodspage/GoodsDetail",
-        params: { id: response.data.ID }
+        params: { id: response.data.good_info.ID }
       });
     } catch (error) {
       console.error('提交表单错误：', error);
