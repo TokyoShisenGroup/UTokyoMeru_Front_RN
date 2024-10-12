@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView } from 'react-native';
 import React from 'react';
 import Header from '@/components/favolist/Header';
 import List from '@/components/favolist/List';
@@ -39,10 +39,14 @@ const FavoList = () => {
     }
 
     return (
-        <SafeAreaView>
-            <Header title='我的收藏' />
-            <List goods={data} />
-        </SafeAreaView>
+        <View>
+            <SafeAreaView>
+                <Header title='我的收藏' />
+            </SafeAreaView>
+            <ScrollView style={{marginBottom: 120}}>
+                <List goods={data} />
+            </ScrollView>
+        </View>
     )
 }
 

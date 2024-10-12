@@ -10,7 +10,7 @@ interface ListProps {
 const List: React.FC<ListProps> = ({ goods }) => {
     console.log(goods);
     return (
-        <ScrollView>
+        <View>
             {goods.map((good) => (
                 <TouchableOpacity key={good.good_id} onPress={() => {
                     router.push({
@@ -36,7 +36,7 @@ const List: React.FC<ListProps> = ({ goods }) => {
                     </ListItem>
                 </TouchableOpacity>
             ))}
-        </ScrollView>
+        </View>
     )
 }
 
