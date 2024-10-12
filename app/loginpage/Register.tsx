@@ -129,12 +129,13 @@ const RegisterScreen = () => {
         prefecture: data.prefecture,
         city: data.city,
         address_detail: data.address
-      }
+      },
+      verification_code_type: "signup"
     }
     try {
       console.log("sendData");
       console.log(sendData);
-      const response = await axios.post(`${API_URL}/v1/signup`, sendData);
+      const response = await axios.post(`${API_URL}/signup`, sendData);
       
       if (response.status === 200) {
         Alert.alert('注册成功', '您已成功注册！');
@@ -156,8 +157,9 @@ const RegisterScreen = () => {
   const sendVerificationCode = async (mail_address: string) => {
     console.log('发送验证码');
     try {
-      const response = await axios.post(`${API_URL}/verification`, {
-        mail_address: mail_address
+      const response = await axios.post(`${API_URL}/login/verification`, {
+        mail_address: mail_address,
+        verification_code_type: "signup"
       });
     } catch (error) {
       console.error('发送验证码错误:', error);

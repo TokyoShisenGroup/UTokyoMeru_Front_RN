@@ -36,6 +36,7 @@ export default function RootLayout() {
         <Stack.Screen name="userpage/UserPage" options={{ headerShown: false }} />
         <Stack.Screen name="userpage/FavoList" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
+        <Stack.Screen name="adminpage/AdminControl" options={{ headerShown: true }} />
       </Stack>
     </ThemeProvider>
   );
