@@ -22,8 +22,8 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
         <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
           {title}
         </Text>
-        <TouchableOpacity onPress={() => {console.log('share button clicked')}} style={styles.button}>
-          <Ionicons name="share-outline" size={24} color="black" />
+        <TouchableOpacity onPress={() => {console.log('manage button clicked')}} style={styles.button}>
+          <Text style={styles.manageButton}>管理</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -49,7 +49,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginHorizontal: 10,
+  },
+  manageButton: {
+    fontSize: 16,
+    color: '#000',
   },
 });
 
