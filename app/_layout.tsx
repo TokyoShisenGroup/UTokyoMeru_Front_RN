@@ -35,6 +35,7 @@ export default function RootLayout() {
         <Stack.Screen name="loginpage/Register" options={{ headerShown: false }} />
         <Stack.Screen name="userpage/UserPage" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
+        <Stack.Screen name="adminpage/AdminControl" options={{ headerShown: true }} />
       </Stack>
     </ThemeProvider>
   );

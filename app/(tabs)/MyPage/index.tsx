@@ -3,6 +3,26 @@ import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, SafeAreaVi
 import { Ionicons } from '@expo/vector-icons';
 import UserInfoBar from '../../../components/mypage/UserInfoBar';
 import SettingsList from '../../../components/mypage/SettingsList';
+import { Button } from 'react-native-elements';
+import storageApi from '@/lib/storageApi';
+import { API_URL } from '@/constants/config';
+import axios from 'axios';
+import { router } from 'expo-router';
+
+
+const testIntoAdmin = async () => {
+  const response = await axios.post(`${API_URL}/login/password`, {
+    mail_address: "3207694306@qq.com",
+    password: "123456"
+  });
+  storageApi.saveUserMailaddress(response.data.mail_address)
+  storageApi.saveToken(response.data.token)
+  storageApi.saveUserName(response.data.user_name)
+  storageApi.saveUserId(response.data.id)
+  
+  router.push({ pathname: "/" })
+
+}
 
 function MyPage() {
   return (
@@ -14,7 +34,7 @@ function MyPage() {
         {/* 设置选项 */}
         <SettingsList />
       </SafeAreaView>
-      
+      <Button title="测试管理员入口" onPress={testIntoAdmin}></Button>
     </ScrollView>
   );
 }
