@@ -38,7 +38,7 @@ function MyPage() {
         <SettingsList />
       </SafeAreaView>
       <Button title="测试管理员入口" onPress={testIntoAdmin}></Button>
-    </ScrollView>
+    </View>
   );
 }
 
