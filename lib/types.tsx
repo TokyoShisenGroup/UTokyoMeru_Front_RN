@@ -81,8 +81,8 @@ export interface ResponseForGetSpecificGood {
 
 // TODO: 具体上到底是大写还是小写？？？？
   // 具体上到底是大写还是小写？？？？
-export interface User {
-  avatar: string;
-  name: string;
-  [property: string]: any;
-}
+// export interface User {
+//   avatar: string;
+//   name: string;
+//   [property: string]: any;
+// }

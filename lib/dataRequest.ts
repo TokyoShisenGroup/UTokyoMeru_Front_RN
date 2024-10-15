@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import {API_URL} from "@/constants/config";
 import storageApi from './storageApi';
-import { GoodPropsSimplified } from '@/lib/types';
+import { GoodPropsSimplified, ResponseForGetGoodsHomePage } from '@/lib/types';
 import { GoodProps } from './types';
 /**
  * Good
@@ -91,19 +91,26 @@ export const useGoods = async () => {
         console.log("token 无定义")
         return
     }
-    const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods`,token);
+    const {data, error, isLoading} = useFetch<ResponseForGetGoodsHomePage[]>(`${API_URL}/goods`,token);
     if (data == undefined) {
         console.log("数据无定义")
         return
     }
-    console.log(data)
-    const mygoods= data.map((item: any) => ({
-        good_id: item.good_id,
-        title: item.title,
-        price: item.price,
-        owener_name: item.user.Name,
-
-    }));
+    const mygoods: GoodPropsSimplified[] = []
+    data.forEach((item: ResponseForGetGoodsHomePage) => {
+        mygoods.push({
+            good_id: item.good_id.toString(),
+            title: item.title,
+            price: item.price,
+            user: {
+                Name: item.user.Name,
+                Avatar: item.user.Avatar,
+            },
+            images: item.images,
+            description: item.description,
+        })
+    })
+    console.log(mygoods)
     return {mygoods, error, isLoading};
 }
 
