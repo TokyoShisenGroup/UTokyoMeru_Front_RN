@@ -13,7 +13,7 @@ interface GoodCardProps {
 const DynamicImage: React.FC<{uri: string}> = ({uri}) => {
   const [aspectRatio, setAspectRatio] = useState(1);
 
-  console.log(uri);
+  // console.log(uri);
   return (
     <Card.Image
       source={{uri}}
