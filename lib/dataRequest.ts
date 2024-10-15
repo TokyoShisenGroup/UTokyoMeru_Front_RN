@@ -1,19 +1,12 @@
 import useSWR from 'swr';
 import {API_URL} from "@/constants/config";
 import storageApi from './storageApi';
-
+import { GoodPropsSimplified } from '@/lib/types';
+import { GoodProps } from './types';
 /**
  * Good
  */
-export interface Good {
-    description: string;
-    good_id: number;
-    images: string[];
-    price: number;
-    title: string;
-    user: User;
-    [property: string]: any;
-}
+
 
 export interface User {
     Avatar: string;
@@ -98,7 +91,7 @@ export const useGoods = async () => {
         console.log("token 无定义")
         return
     }
-    const {data, error, isLoading} = useFetch<Good[]>(`${API_URL}/goods`,token);
+    const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods`,token);
     if (data == undefined) {
         console.log("数据无定义")
         return
@@ -111,7 +104,7 @@ export const useGoods = async () => {
         owener_name: item.user.Name,
 
     }));
-    return mygoods;
+    return {mygoods, error, isLoading};
 }
 
 
@@ -132,7 +125,7 @@ export const useUsers = async () => {
         name: item.name,
         email: item.mail_address,
     }));
-    return myusers;
+    return {myusers, error, isLoading};
 }
 
 
@@ -144,7 +137,7 @@ export const useSpecificGoods = async (good_id: number) => {
         console.log("token 无定义")
         return
     }
-    const {data, error, isLoading} = useFetch<Good>(`${API_URL}/goods/${good_id}`,token);
+    const {data, error, isLoading} = useFetch<GoodPropsSimplified>(`${API_URL}/goods/${good_id}`,token);
     if (data == undefined) {
         console.log("数据无定义")
         return
@@ -183,7 +176,7 @@ export const useSearchGoods = async (keyword: string) => {
         console.log("token 无定义")
         return
     }
-    const {data, error, isLoading} = useFetch<Good[]>(`${API_URL}/goods/search?keyword=${keyword}`,token);
+    const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods/search?keyword=${keyword}`,token);
     if (data == undefined) {
         console.log("数据无定义")
         return

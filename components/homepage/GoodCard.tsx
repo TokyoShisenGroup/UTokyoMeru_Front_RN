@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {Text, Card} from '@rneui/themed';
-import {GoodPropsSimplified} from '../../types';
+import {GoodPropsSimplified} from '../../lib/types';
 import {router} from 'expo-router';
 import FastImage from 'react-native-fast-image';
 

@@ -6,7 +6,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import GoodsSlides from '@/components/goodspage/GoodsSlides';
 import GoodsInfo from '@/components/goodspage/GoodsInfo';
 import Footer from '@/components/goodspage/Footer';
-import { GoodProps } from '@/types';
+import { GoodProps } from '@/lib/types';
 import { useLocalSearchParams, router} from 'expo-router';
 import Header from '@/components/goodspage/Header';
 import {API_URL} from '@/constants/config';

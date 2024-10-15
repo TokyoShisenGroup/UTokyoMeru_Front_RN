@@ -1,10 +1,10 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView }from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
-import { UserDisplayProps } from '@/types';
+import { UserDisplayProps } from '@/lib/types';
 import {router} from 'expo-router';
 import { Header } from 'react-native-elements';
 import GoodsList from '@/components/homepage/GoodsList';
-import {GoodPropsSimplified} from '@/types';
+import {GoodPropsSimplified} from '@/lib/types';
 import UserInfoArea from '@/components/userpage/UserInfoArea';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HeaderUserInfo from '@/components/userpage/HeaderUserInfo';

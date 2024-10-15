@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
-import {GoodPropsSimplified} from '../../types';
+import {GoodPropsSimplified} from '../../lib/types';
 import GoodCard from './GoodCard';
 import axios from 'axios';
 import { API_URL } from '@/constants/config';

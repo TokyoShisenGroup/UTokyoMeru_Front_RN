@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { UserProps } from '@/types';
+import { UserProps } from '@/lib/types';
 import StarRating from '@/components/goodspage/StarRating';
 import Icon from 'react-native-vector-icons/Ionicons';
 

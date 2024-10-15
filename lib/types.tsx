@@ -1,3 +1,8 @@
+// 这部分是工具性类型定义
+
+// 这部分是工具性类型定义
+
+
 export interface GoodProps {
     good_id: string;
     title: string;
@@ -42,4 +47,42 @@ export interface TagProps {
   color?: string;
   backgroundColor?: string;
   onPress?: () => void;
+}
+
+
+
+
+
+
+// response 系列
+export interface ResponseForGetGoodsHomePage {
+  description: string;
+  good_id: number;
+  images: string[];
+  price: number;
+  title: string;
+  user: User;
+}
+
+export interface User {
+  Avatar: string;
+  Name: string;
+}
+
+
+export interface ResponseForGetSpecificGood {
+  description: string;
+  id: number;
+  images: string[];
+  price: number;
+  title: string;
+  user: User;
+}
+
+// TODO: 具体上到底是大写还是小写？？？？
+  // 具体上到底是大写还是小写？？？？
+export interface User {
+  avatar: string;
+  name: string;
+  [property: string]: any;
 }
