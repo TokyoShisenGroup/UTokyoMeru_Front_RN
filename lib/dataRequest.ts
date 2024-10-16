@@ -198,6 +198,18 @@ export const useSearchGoods =  (keyword: string) => {
     return {searchgoods, error, isLoading};
 }
 
+type goodsData = {
+    buy_number: number;
+    sale_number: number;
+    favor_number: number;
+    sold_number: number;
+}
+
+export const useUserGoodsSummary = () => {
+    const {data, error, isLoading} = useFetch<goodsData>(`${API_URL}/user/data`);
+    return {data, error, isLoading};
+}
+
 const compressImage = async (uri: string) => {
     const result = await ImageManipulator.manipulateAsync(
       uri,
