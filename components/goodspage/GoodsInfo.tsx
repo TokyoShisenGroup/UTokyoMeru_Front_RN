@@ -1,5 +1,5 @@
 import { View, Text, Button, StyleSheet } from 'react-native';
-import {GoodProps} from '@/types';
+import {GoodProps} from '@/lib/types';
 import UserCard from '@/components/goodspage/UserCard';
 import Tag from '@/components/goodspage/Tag';
 import ButtonSheets from '@/components/goodspage/ButtonSheets';

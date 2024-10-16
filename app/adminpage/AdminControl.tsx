@@ -1,4 +1,6 @@
 import { API_URL } from '@/constants/config';
+import { useGoods, useSpecificGoods, useUsers } from '@/lib/dataRequest';
+import { useSpecificUser } from '@/lib/dataRequest';
 import storageApi from '@/lib/storageApi';
 import React, { useEffect, useState } from 'react';
 import {
@@ -8,13 +10,13 @@ import {
 import useSWR, { mutate } from 'swr';
 
 // Define types for users and goods
-type User = {
+type AdminUser = {
   id: string;
   name: string;
   email: string;
 };
 
-type Goods = {
+type AdminGoods = {
   good_id: string;
   title: string;
   price: number;
@@ -48,7 +50,7 @@ const fetcher = async (url: string) => {
 const getUsers = async () => {
   const response = await fetcher(`${API_URL}/admin/users`);
   const users = response.data;
-  const myusers: User[] = users.map((item: any) => ({
+  const myusers: AdminUser[] = users.map((item: any) => ({
     id: item.ID,
     name: item.Name,
     email: item.MailAddress,
@@ -62,7 +64,7 @@ const getGoods = async () => {
     console.error('获取商品失败：', error);
     return [];
   });
-  const mygoods: Goods[] = response.map((item: any) => ({
+  const mygoods: AdminGoods[] = response.map((item: any) => ({
     good_id: item.good_id,
     title: item.title,
     price: item.price,
@@ -72,18 +74,25 @@ const getGoods = async () => {
 };
 
 const AdminControl: React.FC = () => {
-  const [users, setUsers] = useState<User[] | null>(null);
-  const [goods, setGoods] = useState<Goods[] | null>(null);
+  const [users, setUsers] = useState<AdminUser[] | null>(null);
+  const [goods, setGoods] = useState<AdminGoods[] | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Fetch data on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedUsers = await getUsers();
-        const fetchedGoods = await getGoods();
-        setUsers(fetchedUsers);
-        setGoods(fetchedGoods);
+        // const fetchedUsers = await getUsers();
+        // const fetchedGoods = await getGoods();
+        const fetchedUsers = await useUsers();
+        const fetchedGoods = await useGoods();
+        if(fetchedUsers == undefined || fetchedGoods == undefined) {
+          console.log("数据无定义")
+          return
+        }
+        setUsers(fetchedUsers.myusers);
+        
+        setGoods(fetchedGoods.mygoods);
       } catch (error) {
         console.error(error);
       } finally {

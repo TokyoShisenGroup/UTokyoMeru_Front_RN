@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView }from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
-import { UserDisplayProps } from '@/types';
+import { UserDisplayProps } from '@/lib/types';
 import {router} from 'expo-router';
 
 

@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { GoodPropsSimplified } from '@/types';
+import { GoodPropsSimplified } from '@/lib/types';
 import { ListItem, Avatar } from 'react-native-elements';
 import { router } from 'expo-router';
 interface ListProps {

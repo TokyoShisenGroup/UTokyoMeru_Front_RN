@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { TagProps } from '@/types';
+import { TagProps } from '@/lib/types';
 
 const Tag: React.FC<TagProps> = ({ 
   text, 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, StyleSheet, Dimensions, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
-import { GoodProps } from '@/types';
+import { GoodProps } from '@/lib/types';
 
 const GoodsSlides: React.FC<GoodProps> = (props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
