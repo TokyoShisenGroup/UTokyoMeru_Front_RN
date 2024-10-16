@@ -74,34 +74,10 @@ const getGoods = async () => {
 };
 
 const AdminControl: React.FC = () => {
-  const [users, setUsers] = useState<AdminUser[] | null>(null);
-  const [goods, setGoods] = useState<AdminGoods[] | null>(null);
-  const [loading, setLoading] = useState(true);
-
+  const fetchedUsers =  useUsers();
+  const fetchedGoods =  useGoods();
+  console.log(fetchedUsers)
   // Fetch data on mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // const fetchedUsers = await getUsers();
-        // const fetchedGoods = await getGoods();
-        const fetchedUsers = await useUsers();
-        const fetchedGoods = await useGoods();
-        if(fetchedUsers == undefined || fetchedGoods == undefined) {
-          console.log("数据无定义")
-          return
-        }
-        setUsers(fetchedUsers.myusers);
-        
-        setGoods(fetchedGoods.mygoods);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   // Function to delete a user
   const deleteUser = async (userId: string) => {
@@ -114,8 +90,6 @@ const AdminControl: React.FC = () => {
       });
 
       Alert.alert('成功', '用户已封禁');
-      mutate(`${API_URL}/users`); // Revalidate data after deletion
-      setUsers(users?.filter(user => user.id !== userId) || []);
     } catch (error) {
       console.error('封禁用户失败：', error);
       Alert.alert('错误', '无法封禁用户');
@@ -134,22 +108,17 @@ const AdminControl: React.FC = () => {
 
       Alert.alert('成功', '商品已删除');
       mutate(`${API_URL}/goods`); // Revalidate data after deletion
-      setGoods(goods?.filter(good => good.good_id !== goodsId) || []);
     } catch (error) {
       console.error('删除商品失败：', error);
       Alert.alert('错误', '无法删除商品');
     }
-  };
-
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
+  };  
 
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>用户管理</Text>
       <FlatList
-        data={users || []}
+        data={fetchedUsers?.myusers || []}
         keyExtractor={(item) => `user-${item.id}`}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
@@ -164,11 +133,11 @@ const AdminControl: React.FC = () => {
 
       <Text style={styles.sectionTitle}>商品管理</Text>
       <FlatList
-        data={goods || []}
+        data={fetchedGoods?.mygoods || []}
         keyExtractor={(item) => `goods-${item.good_id}`}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
-            <Text>{item.good_id} - {item.title} - ￥{item.price} - {item.owener_name}</Text>
+            <Text>{item.good_id} - {item.title} - ￥{item.price} - {item.user.Name}</Text>
             <TouchableOpacity onPress={() => deleteGoods(item.good_id)}>
               <Text style={styles.deleteText}>删除</Text>
             </TouchableOpacity>

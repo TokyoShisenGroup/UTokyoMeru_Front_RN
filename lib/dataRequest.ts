@@ -122,24 +122,39 @@ export const useGoods =  () => {
             description: item.description,
         })
     })
-    console.log(mygoods)
+    // console.log(mygoods)
     return {mygoods, error, isLoading};
 }
 
 
+type adminUsersProps = {
+    id: number,
+    name: string,
+    email: string,
+}
+
 export const useUsers =  () => {
 
-    const {data, error, isLoading} = useFetch<User[]>(`${API_URL}/users`);
+    const {data, error, isLoading} = useFetch<any>(`${API_URL}/admin/users`);
     if (data == undefined) {
         console.log("数据无定义")
         return
     }
-    console.log(data)
-    const myusers= data.map((item: any) => ({
-        id: item.Id,
-        name: item.name,
-        email: item.mail_address,
-    }));
+    console.log(data.data)
+    var myusers: adminUsersProps[] = []
+    const userlist: any[]= data.data
+    userlist.forEach((item: any) => {
+        myusers.push({
+            id: item.ID,
+            name: item.Name,
+            email: item.MailAddress,
+        })
+    })
+    // const myusers= data.data.map((item: any) => ({
+    //     id: item.Id,
+    //     name: item.name,
+    //     email: item.mail_address,
+    // }));
     return {myusers, error, isLoading};
 }
 
