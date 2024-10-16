@@ -97,14 +97,14 @@ const SellItemPage: React.FC = () => {
 
       console.log('表单数据汇总：', postData);
 
-      await useSellItemAPI(postData,images)
+      const responsedata = await useSellItemAPI(postData,images)
       // const response = await axios.get(`${API_URL}/goods`)
       console.log("商品发布成功");
 
-      // router.push({
-      //   pathname: "/goodspage/GoodsDetail",
-      //   params: { id: response.data.good_info.ID }
-      // });
+      router.push({
+        pathname: "/goodspage/GoodsDetail",
+        params: { id: responsedata.good_info.ID }
+      });
     } catch (error) {
       console.error('提交表单错误：', error);
       Alert.alert('发布失败', '请稍后重试');

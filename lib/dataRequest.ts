@@ -127,13 +127,9 @@ export const useGoods =  () => {
 }
 
 
-export const useUsers = async () => {
-    const token = await storageApi.getToken();
-    if (token == null) {
-        console.log("token 无定义")
-        return
-    }
-    const {data, error, isLoading} = useFetch<User[]>(`${API_URL}/users`,token);
+export const useUsers =  () => {
+
+    const {data, error, isLoading} = useFetch<User[]>(`${API_URL}/users`);
     if (data == undefined) {
         console.log("数据无定义")
         return
@@ -150,13 +146,9 @@ export const useUsers = async () => {
 
 
 
-export const useSpecificGoods = async (good_id: number) => {
-    const token = await storageApi.getToken();
-    if (token == null) {
-        console.log("token 无定义")
-        return
-    }
-    const {data, error, isLoading} = useFetch<GoodPropsSimplified>(`${API_URL}/goods/${good_id}`,token);
+export const useSpecificGoods =  (good_id: number) => {
+
+    const {data, error, isLoading} = useFetch<GoodPropsSimplified>(`${API_URL}/goods/${good_id}`);
     if (data == undefined) {
         console.log("数据无定义")
         return
@@ -170,13 +162,8 @@ export const useSpecificGoods = async (good_id: number) => {
     return {mygood, error, isLoading};
 }
 
-export const useSpecificUser = async (user_id: number) => {
-    const token = await storageApi.getToken();
-    if (token == null) {
-        console.log("token 无定义")
-        return
-    }
-    const {data, error, isLoading} = useFetch<User>(`${API_URL}/admin/users/${user_id}`,token);
+export const useSpecificUser =  (user_id: number) => {
+    const {data, error, isLoading} = useFetch<User>(`${API_URL}/admin/users/${user_id}`);
     if (data == undefined) {
         console.log("数据无定义")
         return
@@ -189,13 +176,8 @@ export const useSpecificUser = async (user_id: number) => {
     return {myuser, error, isLoading};
 }
 
-export const useSearchGoods = async (keyword: string) => {
-    const token = await storageApi.getToken();
-    if (token == null) {
-        console.log("token 无定义")
-        return
-    }
-    const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods/search?keyword=${keyword}`,token);
+export const useSearchGoods =  (keyword: string) => {
+    const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods/search?keyword=${keyword}`);
     if (data == undefined) {
         console.log("数据无定义")
         return
