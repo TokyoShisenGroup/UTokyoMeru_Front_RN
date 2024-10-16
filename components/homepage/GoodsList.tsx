@@ -4,6 +4,7 @@ import {GoodPropsSimplified} from '../../lib/types';
 import GoodCard from './GoodCard';
 import axios from 'axios';
 import { API_URL } from '@/constants/config';
+import { useGoods } from '@/lib/dataRequest';
 
 const splitDataIntoColumns = (data: GoodPropsSimplified[]) => {
   const leftColumn: GoodPropsSimplified[] = [];
@@ -31,28 +32,10 @@ const Column: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
 };
 
 const GoodsList: React.FC<{uri: string}> = ({uri}) => {
-  const {leftColumn: l, rightColumn: r} = splitDataIntoColumns([]);
+  var mygoodsinHome = useGoods()?.mygoods
 
-  const [leftColumn, setLeftColumn] = useState<GoodPropsSimplified[]>(l);
-  const [rightColumn, setRightColumn] = useState<GoodPropsSimplified[]>(r);
+  const {leftColumn: l, rightColumn: r} = splitDataIntoColumns(mygoodsinHome || []);
 
-
-  const fetchMoreGoods = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/${uri}`);
-      const {leftColumn: l, rightColumn: r} = splitDataIntoColumns(response.data);
-      setLeftColumn(l);
-      setRightColumn(r);
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }
-
-  useEffect(() => {
-    fetchMoreGoods();
-    console.log("GoodsList rendered", leftColumn[0]);
-  }, []);
 
   return (
     <FlatList
@@ -61,10 +44,10 @@ const GoodsList: React.FC<{uri: string}> = ({uri}) => {
       renderItem={() => (
         <View style={styles.container}>
           <View style={styles.column}>
-            <Column data={leftColumn} />
+            <Column data={l} />
           </View>
           <View style={styles.column}>
-            <Column data={rightColumn} />
+            <Column data={r} />
           </View>
         </View>
       )}

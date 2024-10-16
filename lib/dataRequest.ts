@@ -3,10 +3,17 @@ import {API_URL} from "@/constants/config";
 import storageApi from './storageApi';
 import { GoodPropsSimplified, ResponseForGetGoodsHomePage } from '@/lib/types';
 import { GoodProps } from './types';
+import * as FileSystem from 'expo-file-system';
+import * as ImageManipulator from 'expo-image-manipulator';
+import SMMSApiClient from './imageApi';
+import axios from 'axios';
+import useSWRImmutable from 'swr/immutable';
+
 /**
  * Good
  */
-
+const APITOKEN = "1p4sVu5JstjtNfFh4lpQsqFtlgiS1DLa"
+const smmsClient = new SMMSApiClient(APITOKEN);
 
 export interface User {
     Avatar: string;
@@ -47,8 +54,12 @@ export interface User {
 }
 
 // 定义通用的 fetcher 函数，支持自定义请求选项
-const fetcher = <T>(url: string, token: string, options?: RequestInit): Promise<T> => {
+const fetcher = async<T>(url: string,  options?: RequestInit): Promise<T> => {
     // 如果没有自定义 headers，就初始化为一个空对象
+    const token = await storageApi.getToken();
+    if (token == null) {
+        throw new Error("token 无定义")
+    }
     const headers = options?.headers || {};
 
     // 在 headers 中添加 Authorization 头，将 token 传递
@@ -70,11 +81,16 @@ const fetcher = <T>(url: string, token: string, options?: RequestInit): Promise<
 };
 
 // 修改 useFetch 钩子，允许传入请求选项
-export const useFetch = <T>(url: string, token: string, options?: RequestInit) => {
-    
-    const { data, error, isLoading } = useSWR<T>(
+export const useFetch = <T>(url: string, options?: RequestInit) => {
+
+    const { data, error, isLoading } = useSWRImmutable<T>(
         url,
-        () => fetcher<T>(url, token, options)
+        () => fetcher<T>(url, options),
+        {
+            refreshInterval: 10000,
+            revalidateOnFocus: true, // 页面获得焦点时刷新
+            revalidateOnReconnect: true, // 网络重新连接时刷新
+        }
     );
 
     return {
@@ -85,13 +101,9 @@ export const useFetch = <T>(url: string, token: string, options?: RequestInit) =
 };
 
 
-export const useGoods = async () => {
-    const token = await storageApi.getToken();
-    if (token == null) {
-        console.log("token 无定义")
-        return
-    }
-    const {data, error, isLoading} = useFetch<ResponseForGetGoodsHomePage[]>(`${API_URL}/goods`,token);
+export const useGoods =  () => {
+
+    const {data, error, isLoading} = useFetch<ResponseForGetGoodsHomePage[]>(`${API_URL}/goods`);
     if (data == undefined) {
         console.log("数据无定义")
         return
@@ -196,3 +208,88 @@ export const useSearchGoods = async (keyword: string) => {
     }));
     return {searchgoods, error, isLoading};
 }
+
+const compressImage = async (uri: string) => {
+    const result = await ImageManipulator.manipulateAsync(
+      uri,
+      [{ resize: { width: 1000 } }], // 调整尺寸
+      { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // 压缩质量
+    );
+    return result.uri;
+  };
+
+
+const uploadImage = async (uri: string) => {
+    try {
+      const compressedUri = await compressImage(uri);
+
+      // 使用 SMMSApiClient 上传图片
+      const uploadData = await smmsClient.uploadImage(compressedUri);
+
+      console.log('上传成功：', uploadData);
+      console.log(typeof uploadData)
+      // 返回图片的 URL
+      if(uploadData.data != undefined)
+        return uploadData.data.url;
+      else if ((uploadData as any).images !== undefined) {
+        return (uploadData as any).images as string;
+      }
+    } catch (error) {
+      console.error('图片上传错误：', error);
+      throw error;
+    }
+  };
+
+  const uploadImages = async (images: string[]) => {
+    const uploadedUrls = [];
+    for (const image of images) {
+      const url = await uploadImage(image);
+      console.log("插入数组的地址 ",url)
+      uploadedUrls.push(url);
+    }
+    return uploadedUrls;
+  };
+
+
+
+type FormData = {
+    title: string;
+    description: string;
+    price: number;
+    tags: string[];
+    // tagInput: string;
+    // images: string[];
+    seller_id: string;
+    is_invisible: boolean;
+    is_deleted: boolean;
+    is_bought: boolean;
+  };
+
+  export const useSellItemAPI = async (postData: FormData, images: string[]) => {
+    try {
+      const uploadedImageUrls = await uploadImages(images);
+  
+      const toUploadData = {
+        ...postData,
+        images: uploadedImageUrls,
+      };
+  
+      const token = await storageApi.getToken();
+      if (!token) {
+        console.error("Token 无定义");
+        return;
+      }
+  
+      const response = await axios.post(`${API_URL}/goods/`, toUploadData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      console.log("商品发布成功", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("提交商品信息时出错：", error);
+      throw error;
+    }
+  };
