@@ -103,27 +103,12 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
 
 export const useGoods =  () => {
 
-    const {data, error, isLoading} = useFetch<ResponseForGetGoodsHomePage[]>(`${API_URL}/goods`);
+    const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods`);
     if (data == undefined) {
         console.log("数据无定义")
         return
     }
-    const mygoods: GoodPropsSimplified[] = []
-    data.forEach((item: ResponseForGetGoodsHomePage) => {
-        mygoods.push({
-            good_id: item.good_id.toString(),
-            title: item.title,
-            price: item.price,
-            user: {
-                Name: item.user.Name,
-                Avatar: item.user.Avatar,
-            },
-            images: item.images,
-            description: item.description,
-        })
-    })
-    // console.log(mygoods)
-    return {mygoods, error, isLoading};
+    return {data, error, isLoading};
 }
 
 
