@@ -9,10 +9,29 @@ import {useGoods} from "@/lib/dataRequest";
 
 
 function HomeScreen() {
+
+    const {data, error, isLoading} = useGoods() || {}
+    if (isLoading){
+        return (
+            <SafeAreaView>
+                <Text>Loading...</Text>
+            </SafeAreaView>
+        );
+    }
+    else if (error){
+        return (
+            <SafeAreaView>
+                <Text>Error: {error}</Text>
+            </SafeAreaView>
+        );
+    }
+    else{
+        
+    }
     return (
         <SafeAreaView>
             <ISearchBar onSearch={()=>{console.log("Hello")}}/>
-            <GoodsList uri="goods" />
+            <GoodsList data={data || []} />
         </SafeAreaView>
     );
 }

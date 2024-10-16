@@ -31,10 +31,9 @@ const Column: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
   );
 };
 
-const GoodsList: React.FC<{uri: string}> = ({uri}) => {
-  var goodsData = useGoods()?.data
+const GoodsList: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
 
-  const {leftColumn: l, rightColumn: r} = splitDataIntoColumns(goodsData || []);
+  const {leftColumn: l, rightColumn: r} = splitDataIntoColumns(data || []);
 
 
   return (
