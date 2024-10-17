@@ -2,10 +2,10 @@ import { View, Text, SafeAreaView, ScrollView } from 'react-native';
 import React from 'react';
 import Header from '@/components/favolist/Header';
 import List from '@/components/favolist/List';
-import { useUserFavorites } from '@/lib/dataRequest';
+import { useUserSolds } from '@/lib/dataRequest';
 
-const FavoList = () => {
-    const {data, error, isLoading} = useUserFavorites()
+const SoldList = () => {
+    const {data, error, isLoading} = useUserSolds()
 
     if (error) {
         console.log(error);
@@ -27,7 +27,7 @@ const FavoList = () => {
     return (
         <View>
             <SafeAreaView>
-                <Header title='我的收藏' />
+                <Header title='我卖出的' />
             </SafeAreaView>
             <ScrollView style={{marginBottom: 120}}>
                 <List goods={data || []} />
@@ -36,4 +36,4 @@ const FavoList = () => {
     )
 }
 
-export default FavoList;
+export default SoldList;

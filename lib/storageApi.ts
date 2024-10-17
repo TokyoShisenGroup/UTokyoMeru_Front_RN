@@ -69,9 +69,9 @@ const storageApi = {
   // 清除所有数据
   clearAll: async (): Promise<void> => {
     try {
-      await storageApi.save("token", "");
-      await storageApi.save("usermailaddress", "");
-      await storageApi.save("username", "");
+      await storageApi.save("token", undefined);
+      await storageApi.save("usermailaddress", undefined);
+      await storageApi.save("username", undefined);
 
       console.log('All data cleared.');
     } catch (error) {
@@ -80,37 +80,40 @@ const storageApi = {
     await storageApi.init();
   },
 
-  getToken: async (): Promise<string | null> => {
-    if (await storageApi.load("token") === "") {
+  getToken: async (): Promise<string | undefined> => {
+    if (await storageApi.load("token") === undefined) {
       console.log("token not found");
-      return "";
+      return undefined;
     }
     await storageApi.init();
     return await storageApi.load("token");
   },
-  getUserMailaddress: async (): Promise<string | null> => {
-    if (await storageApi.load("usermailaddress") === "") {
+  getUserMailaddress: async (): Promise<string | undefined> => {
+    if (await storageApi.load("usermailaddress") === undefined) {
       console.log("usermailaddress not found");
-      return "";
+      return undefined;
     }
     await storageApi.init();
     return await storageApi.load("usermailaddress");
   },
-  getUserName: async (): Promise<string | null> => {
-    if (await storageApi.load("username") === "") {
+  getUserName: async (): Promise<string | undefined> => {
+    if (await storageApi.load("username") === undefined) {
       console.log("username not found");
-      return "";
+      return undefined;
     }
     await storageApi.init();
     return await storageApi.load("username");
   },
-  getUserId: async (): Promise<string | null> => {
-    if (await storageApi.load("userid") === "") {
+  getUserId: async (): Promise<number | undefined> => {
+    if (await storageApi.load("userid") === undefined) {
       console.log("userid not found");
-      return "";
+      return undefined;
     }
     await storageApi.init();
-    return await storageApi.load("userid");
+    const id = await (storageApi.load("userid"));
+    console.log("rawid:", id)
+    console.log("parsedid:", parseInt(id, 10))
+    return parseInt(id, 10);
   },
   saveToken: async (token: string): Promise<void> => {
     await storageApi.save("token", token);
@@ -124,8 +127,8 @@ const storageApi = {
     await storageApi.save("username", User_Name);
     await storageApi.init();
   },
-  saveUserId: async (User_Id: string): Promise<void> => {
-    await storageApi.save("userid", User_Id);
+  saveUserId: async (User_Id: number): Promise<void> => {
+    await storageApi.save("userid", User_Id.toString());
     console.log("用户的id是", User_Id);
     await storageApi.init();
   }

@@ -1,15 +1,38 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView }from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { UserDisplayProps } from '@/lib/types';
-import {router} from 'expo-router';
+import {router, useLocalSearchParams} from 'expo-router';
 import { Header } from 'react-native-elements';
 import GoodsList from '@/components/homepage/GoodsList';
 import {GoodPropsSimplified} from '@/lib/types';
 import UserInfoArea from '@/components/userpage/UserInfoArea';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HeaderUserInfo from '@/components/userpage/HeaderUserInfo';
+import { useUserSales } from '@/lib/dataRequest';
+import storageApi from '@/lib/storageApi';
 
-const UserPage: React.FC<UserDisplayProps> = () =>{
+const UserPage: React.FC<UserDisplayProps> = () =>{ 
+    const params = useLocalSearchParams();
+    const {data, error, isLoading} = useUserSales(params.id as string) || {}
+    console.log("params.id:", params.id, "type:", typeof(params.id))
+    if (isLoading){
+        return (
+            <SafeAreaView>
+                <Text>Loading...</Text>
+            </SafeAreaView>
+        );
+    }
+    else if (error){
+        console.log("error:", error)
+        return ( 
+            <SafeAreaView>
+                <Text>Error</Text>
+            </SafeAreaView>
+        );
+    }
+    else{
+        
+    }
     return (
         <View>
             <Header 
@@ -35,7 +58,7 @@ const UserPage: React.FC<UserDisplayProps> = () =>{
                 rating={4.5} 
                 onEditPress={()=>{console.log("编辑按钮")}} 
                 />
-                <GoodsList uri="goods" />
+                <GoodsList data={data || []} />
             </ScrollView>
      </View>
     )

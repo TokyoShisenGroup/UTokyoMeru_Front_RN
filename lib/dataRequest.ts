@@ -87,7 +87,7 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
         url,
         () => fetcher<T>(url, options),
         {
-            refreshInterval: 10000,
+            refreshInterval: 120000,
             revalidateOnFocus: true, // 页面获得焦点时刷新
             revalidateOnReconnect: true, // 网络重新连接时刷新
         }
@@ -100,17 +100,46 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
     };
 };
 
-
+// 获取所有商品
 export const useGoods =  () => {
-
     const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods`);
-    if (data == undefined) {
-        console.log("数据无定义")
-        return
-    }
     return {data, error, isLoading};
 }
 
+// 获取用户发布的商品(包括已经卖出去的)
+export const useUserSales =  (user_id: string) => {
+
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/sales?user_id=${user_id}`);
+  return {data, error, isLoading};
+}
+
+// 获取用户正在出售的商品
+export const useUserSellings =  (user_id: string) => {
+
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/selling?user_id=${user_id}`);
+  return {data, error, isLoading};
+}
+
+// 获取用户卖出的商品
+export const useUserSolds =  () => {
+
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/sold`);
+  return {data, error, isLoading};
+}
+
+// 获取用户收藏的商品
+export const useUserFavorites =  () => {
+
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/favolist`);
+  return {data, error, isLoading};
+}
+
+// 获取用户买到的商品
+export const useUserBought =  () => {
+
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/bought`);
+  return {data, error, isLoading};
+}
 
 type adminUsersProps = {
     id: number,
@@ -122,10 +151,9 @@ export const useUsers =  () => {
 
     const {data, error, isLoading} = useFetch<any>(`${API_URL}/admin/users`);
     if (data == undefined) {
-        console.log("数据无定义")
+        throw new Error("no data")
         return
     }
-    console.log(data.data)
     var myusers: adminUsersProps[] = []
     const userlist: any[]= data.data
     userlist.forEach((item: any) => {
@@ -150,7 +178,7 @@ export const useSpecificGoods =  (good_id: number) => {
 
     const {data, error, isLoading} = useFetch<GoodPropsSimplified>(`${API_URL}/goods/${good_id}`);
     if (data == undefined) {
-        console.log("数据无定义")
+        throw new Error("no data")
         return
     }
     const mygood = {
@@ -165,7 +193,7 @@ export const useSpecificGoods =  (good_id: number) => {
 export const useSpecificUser =  (user_id: number) => {
     const {data, error, isLoading} = useFetch<User>(`${API_URL}/admin/users/${user_id}`);
     if (data == undefined) {
-        console.log("数据无定义")
+        throw new Error("no data")
         return
     }
     const myuser = {
@@ -179,7 +207,7 @@ export const useSpecificUser =  (user_id: number) => {
 export const useSearchGoods =  (keyword: string) => {
     const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods/search?keyword=${keyword}`);
     if (data == undefined) {
-        console.log("数据无定义")
+        throw new Error("no data")
         return
     }
     const searchgoods = data.map((item: any) => ({
@@ -189,6 +217,18 @@ export const useSearchGoods =  (keyword: string) => {
         owener_name: item.user.Name,
     }));
     return {searchgoods, error, isLoading};
+}
+
+type goodsData = {
+    buy_number: number;
+    sale_number: number;
+    favor_number: number;
+    sold_number: number;
+}
+
+export const useUserGoodsSummary = () => {
+    const {data, error, isLoading} = useFetch<goodsData>(`${API_URL}/user/data`);
+    return {data, error, isLoading};
 }
 
 const compressImage = async (uri: string) => {
