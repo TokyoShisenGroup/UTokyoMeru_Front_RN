@@ -2,10 +2,6 @@ import { View, Text, SafeAreaView, ScrollView } from 'react-native';
 import React from 'react';
 import Header from '@/components/favolist/Header';
 import List from '@/components/favolist/List';
-import useSWR from 'swr';
-import axios from 'axios';
-import { API_URL } from '@/constants/config';
-import storageApi from '@/lib/storageApi';
 import { useUserFavorites } from '@/lib/dataRequest';
 
 const FavoList = () => {

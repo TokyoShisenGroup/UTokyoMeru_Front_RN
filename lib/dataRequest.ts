@@ -106,10 +106,24 @@ export const useGoods =  () => {
     return {data, error, isLoading};
 }
 
-// 获取用户发布的商品
+// 获取用户发布的商品(包括已经卖出去的)
 export const useUserSales =  (user_id: string) => {
 
   const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/sales?user_id=${user_id}`);
+  return {data, error, isLoading};
+}
+
+// 获取用户正在出售的商品
+export const useUserSellings =  (user_id: string) => {
+
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/selling?user_id=${user_id}`);
+  return {data, error, isLoading};
+}
+
+// 获取用户卖出的商品
+export const useUserSolds =  () => {
+
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/sold`);
   return {data, error, isLoading};
 }
 
