@@ -9,15 +9,15 @@ const GoodsSummary = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={() => console.log('我发布的')}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/userpage/SaleList')}>
                 <Text style={styles.number}>{data?.sale_number}</Text>
                 <Text style={styles.text}>我发布的</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => console.log('我卖出的')}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/userpage/SoldList')}>
                 <Text style={styles.number}>{data?.sold_number}</Text>
                 <Text style={styles.text}>我卖出的</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => console.log('我买到的')}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/userpage/BoughtList')}>
                 <Text style={styles.number}>{data?.buy_number}</Text>
                 <Text style={styles.text}>我买到的</Text>
             </TouchableOpacity>

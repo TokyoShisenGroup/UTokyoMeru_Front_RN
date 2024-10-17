@@ -6,20 +6,10 @@ import useSWR from 'swr';
 import axios from 'axios';
 import { API_URL } from '@/constants/config';
 import storageApi from '@/lib/storageApi';
-
-const fetcher = async (url: string) => {
-    const token = await storageApi.getToken();
-    console.log(token);
-    const res = await axios.get(url, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        },
-    });
-    return res.data;
-}
+import { useUserFavorites } from '@/lib/dataRequest';
 
 const FavoList = () => {
-    const {data, error, isLoading} = useSWR(`${API_URL}/user/favolist`, fetcher);
+    const {data, error, isLoading} = useUserFavorites()
 
     if (error) {
         console.log(error);
@@ -44,7 +34,7 @@ const FavoList = () => {
                 <Header title='我的收藏' />
             </SafeAreaView>
             <ScrollView style={{marginBottom: 120}}>
-                <List goods={data} />
+                <List goods={data || []} />
             </ScrollView>
         </View>
     )

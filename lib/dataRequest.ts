@@ -100,23 +100,30 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
     };
 };
 
-
+// 获取所有商品
 export const useGoods =  () => {
-
     const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods`);
     return {data, error, isLoading};
 }
 
-
+// 获取用户发布的商品
 export const useUserSales =  (user_id: string) => {
 
   const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/sales?user_id=${user_id}`);
   return {data, error, isLoading};
 }
 
+// 获取用户收藏的商品
 export const useUserFavorites =  () => {
 
   const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/favolist`);
+  return {data, error, isLoading};
+}
+
+// 获取用户买到的商品
+export const useUserBought =  () => {
+
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/bought`);
   return {data, error, isLoading};
 }
 
