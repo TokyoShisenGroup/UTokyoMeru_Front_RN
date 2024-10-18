@@ -3,22 +3,30 @@ import { StyleSheet} from 'react-native';
 import {Header} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import {SearchBar} from '@rneui/base';
+import { GoodPropsSimplified } from '@/lib/types';
+import { useGoods } from '@/lib/dataRequest';
 
 interface ISearchBarProps {
-  onSearch: (query: string) => void;
+  setData: (query: GoodPropsSimplified[]) => void;
+  data: GoodPropsSimplified[];
 }
 
-const ISearchBar: React.FC<ISearchBarProps> = ({onSearch}) => {
+
+const searchGoodsFromString = (query: string, data: GoodPropsSimplified[]) => {
+  return data.filter((item) => item.description.includes(query) || item.title.includes(query));
+}
+
+const ISearchBar: React.FC<ISearchBarProps> = ({setData, data}) => {
   const [value, setValue] = React.useState('');
 
   const handleSearchChange = (newValue: string) => {
     setValue(newValue);
-    onSearch(newValue);
+    setData(searchGoodsFromString(newValue, data || []));
   };
 
   const onCancel = () => {
     setValue('');
-    onSearch('');
+    setData(data);
   };
 
   return (

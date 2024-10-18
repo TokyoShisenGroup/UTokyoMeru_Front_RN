@@ -20,7 +20,6 @@ function HomeScreen() {
     }
     return (
         <SafeAreaView>
-            <ISearchBar onSearch={()=>{console.log("Hello")}}/>
             <GoodsList data={data || []} />
         </SafeAreaView>
     );

@@ -5,6 +5,7 @@ import GoodCard from './GoodCard';
 import axios from 'axios';
 import { API_URL } from '@/constants/config';
 import { useGoods } from '@/lib/dataRequest';
+import ISearchBar from './ISearchBar';
 
 const splitDataIntoColumns = (data: GoodPropsSimplified[]) => {
   const leftColumn: GoodPropsSimplified[] = [];
@@ -32,12 +33,14 @@ const Column: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
 };
 
 const GoodsList: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
-
-  const {leftColumn: l, rightColumn: r} = splitDataIntoColumns(data || []);
+  const [dataFromAPI, setDataFromAPI] = useState<GoodPropsSimplified[]>(data || []);
+  const {leftColumn: l, rightColumn: r} = splitDataIntoColumns(dataFromAPI || []);
 
 
   return (
-    <FlatList
+    <>
+            <ISearchBar setData={setDataFromAPI} data={data}/>
+            <FlatList
       data={[{key: 'columns'}]}
       keyExtractor={item => item.key}
       renderItem={() => (
@@ -54,6 +57,8 @@ const GoodsList: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
         console.log('onEndReached');
       }}
     />
+    </>
+
   );
 };
 
