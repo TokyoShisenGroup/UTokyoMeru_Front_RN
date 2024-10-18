@@ -18,16 +18,6 @@ function HomeScreen() {
             </SafeAreaView>
         );
     }
-    else if (error){
-        return (
-            <SafeAreaView>
-                <Text>Error: {error}</Text>
-            </SafeAreaView>
-        );
-    }
-    else{
-        
-    }
     return (
         <SafeAreaView>
             <ISearchBar onSearch={()=>{console.log("Hello")}}/>
