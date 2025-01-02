@@ -1,5 +1,9 @@
 # Welcome to your Expo app 👋
 
+易物（东大煤炉）的前端代码仓库 
+
+后端：https://github.com/TokyoShisenGroup/UTokyoMeru_Back
+
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
