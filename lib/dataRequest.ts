@@ -87,7 +87,7 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
         url,
         () => fetcher<T>(url, options),
         {
-            refreshInterval: 120000,
+            refreshInterval: 3000,
             revalidateOnFocus: true, // 页面获得焦点时刷新
             revalidateOnReconnect: true, // 网络重新连接时刷新
         }
