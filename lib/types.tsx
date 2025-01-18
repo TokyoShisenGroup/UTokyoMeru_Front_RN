@@ -8,6 +8,8 @@ export interface GoodProps {
     title: string;
     images: string[];
     price: number;
+    views: number;
+    favorites: number;
     description: string;
     user: UserProps;
     tags: string[];

@@ -69,10 +69,13 @@ const storageApi = {
   // 清除所有数据
   clearAll: async (): Promise<void> => {
     try {
-      await storageApi.save("token", undefined);
-      await storageApi.save("usermailaddress", undefined);
-      await storageApi.save("username", undefined);
-
+      await storage.clearMap();  // 清除所有数据
+      // 或者明确列出所有需要清除的键
+      await storageApi.save("token", null);
+      await storageApi.save("usermailaddress", null);
+      await storageApi.save("username", null);
+      await storageApi.save("userid", null);
+      
       console.log('All data cleared.');
     } catch (error) {
       console.error('Error clearing all data:', error);
@@ -81,7 +84,7 @@ const storageApi = {
   },
 
   getToken: async (): Promise<string | undefined> => {
-    if (await storageApi.load("token") === undefined) {
+    if (!await storageApi.load("token")) {
       console.log("token not found");
       return undefined;
     }

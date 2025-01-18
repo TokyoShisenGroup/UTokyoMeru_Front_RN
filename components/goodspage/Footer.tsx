@@ -2,13 +2,27 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
+const onFavoriteButtonPress = () => {
+  console.log("收藏被点击");
+};
+
+const onBuyButtonPress = () => {
+  console.log("购买被点击");
+};
+
 const Footer: React.FC = () => {
   return (
     <View style={styles.footer}>
-      <TouchableOpacity style={styles.favoriteButton}>
+      <TouchableOpacity 
+        style={styles.favoriteButton} 
+        onPress={onFavoriteButtonPress}
+      >
         <Text style={styles.favoriteButtonText}>收藏</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buyButton}>
+      <TouchableOpacity 
+        style={styles.buyButton} 
+        onPress={onBuyButtonPress}
+      >
         <Text style={styles.buyButtonText}>购买</Text>
       </TouchableOpacity>
     </View>

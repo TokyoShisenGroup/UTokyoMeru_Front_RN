@@ -11,22 +11,22 @@ import { useLocalSearchParams, router} from 'expo-router';
 import Header from '@/components/goodspage/Header';
 import {API_URL} from '@/constants/config';
 
-const exampleGood: GoodProps = {
-    good_id: '1',
-    title: '叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段',
-    images: ['https://pic1.zhimg.com/v2-119565438456235a942996a574800eb8_b.jpg', 'https://picx.zhimg.com/v2-0bdd648c59f9ab3fb91c54933f7b0c21_b.jpg'],
-    price: 9999999.12,
-    description:
-        '叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段，叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段',
-    user: {
-        Name: 'brynn',
-        Avatar:
-            'https://images.pexels.com/photos/598745/pexels-photo-598745.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb',
-        UserID: '1',
-        Rating: 4.5,
-    },
-    tags: ['tag1', 'tag2', 'tag3'],
-}
+// const exampleGood: GoodProps = {
+//     good_id: '1',
+//     title: '叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段',
+//     images: ['https://pic1.zhimg.com/v2-119565438456235a942996a574800eb8_b.jpg', 'https://picx.zhimg.com/v2-0bdd648c59f9ab3fb91c54933f7b0c21_b.jpg'],
+//     price: 9999999.12,
+//     description:
+//         '叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段，叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段叮咚鸡叮咚鸡大狗大狗叫叫叫，带兴奋兴奋剂，一段一段带一段',
+//     user: {
+//         Name: 'brynn',
+//         Avatar:
+//             'https://images.pexels.com/photos/598745/pexels-photo-598745.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb',
+//         UserID: '1',
+//         Rating: 4.5,
+//     },
+//     tags: ['tag1', 'tag2', 'tag3'],
+// }
 
 const fetchGoodsDetail = async (id: string) => {
     const response = await axios.get(`${API_URL}/goods/${id}`);
@@ -83,6 +83,8 @@ function GoodsDetail() {
     if (!item) {
         return <Text>加载中...</Text>;
     }
+
+    console.log(item);
 
     return (
         <> 

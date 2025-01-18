@@ -1,43 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import UserInfoBar from '../../../components/mypage/UserInfoBar';
 import SettingsList from '../../../components/mypage/SettingsList';
 import GoodsSummary from '../../../components/mypage/GoodsSummary';
-import { Button } from 'react-native-elements';
 import storageApi from '@/lib/storageApi';
-import { API_URL } from '@/constants/config';
-import axios from 'axios';
-import { router } from 'expo-router';
 
 
-const testIntoAdmin = async () => {
-  const response = await axios.post(`${API_URL}/login/password`, {
-    mail_address: "3207694306@qq.com",
-    password: "123456"
-  });
-  storageApi.saveUserMailaddress(response.data.mail_address)
-  storageApi.saveToken(response.data.token)
-  storageApi.saveUserName(response.data.user_name)
-  storageApi.saveUserId(response.data.id)
-  
-  router.push({ pathname: "/" })
 
-}
 
 function MyPage() {
+  const [name, setName] = useState<string>("Anonymous");
+  const [avatar, setAvatar] = useState<string>("https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg");
+  const id = storageApi.getUserId();
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const userName = await storageApi.getUserName();
+      setName(userName || "Anonymous");
+    };
+    // const fetchUserAvatar = async () => {
+    //   const userAvatar = await storageApi.getUserAvatar();
+    //   setAvatar(userAvatar || "https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg");
+    // };
+    fetchUserName();
+    // fetchUserAvatar();
+  }, []);
+
   return (
     <View style={styles.container}>
 
       <SafeAreaView> 
         {/* 用户信息条 */}
-        <UserInfoBar Name="yamanashi" Avatar='https://images.pexels.com/photos/598745/pexels-photo-598745.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb'/>
+        <UserInfoBar Name={name} Avatar={avatar || "https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg"}/>
         {/* 设置选项 */}
 
         <GoodsSummary />
         <SettingsList />
       </SafeAreaView>
-      <Button title="测试管理员入口" onPress={testIntoAdmin}></Button>
     </View>
   );
 }

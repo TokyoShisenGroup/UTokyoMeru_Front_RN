@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { UserProps } from '@/lib/types';
 import StarRating from '@/components/goodspage/StarRating';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from '@expo/vector-icons/Ionicons';
 
 const UserCard: React.FC<UserProps> = ( user ) => {
   const navigation = useNavigation();
@@ -11,12 +11,13 @@ const UserCard: React.FC<UserProps> = ( user ) => {
   const handlePress = () => {
     //todo 跳转到用户主页
     console.log("jump to user profile");
+    console.log(user);
   };
 
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
       <View style={styles.avatarContainer}>
-        <Image source={{ uri: user.Avatar }} style={styles.avatar} />
+        <Image source={{ uri: user.Avatar || "https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg" }} style={styles.avatar} />
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{user.Name}</Text>

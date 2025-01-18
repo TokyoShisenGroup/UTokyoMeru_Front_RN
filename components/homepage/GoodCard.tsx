@@ -43,6 +43,9 @@ const GoodCard: React.FC<GoodCardProps> = ({item}) => {
         }}>
         <Card containerStyle={styles.card}>
           <DynamicImage uri={item.images[0]} />
+          <Text style={styles.title} numberOfLines={3}>
+            {item.title}
+          </Text>
           <Text style={styles.description} numberOfLines={3}>
             {item.description}
           </Text>
@@ -79,8 +82,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: undefined,
   },
-  description: {
+  title: {
     margin: 10,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  description: {
+    marginLeft: 10,
     fontSize: 15,
   },
   price: {

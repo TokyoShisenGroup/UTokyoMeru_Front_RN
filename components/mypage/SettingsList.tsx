@@ -61,7 +61,6 @@ const SettingsList = () => {
           ]);
         }
       };
-      // console.log(settingsList)
       checkLoginStatus();
 
       // 可选：返回一个清理函数，当屏幕失去焦点时执行

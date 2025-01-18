@@ -102,7 +102,8 @@ const Login: React.FC = () => {
     // 检查是否已经登录
     const checkLoginStatus = async () => {
       const userMailaddress = await storageApi.getUserMailaddress()
-      if (userMailaddress !== "") {
+      console.log(userMailaddress)
+      if (userMailaddress !== null) {
         setIsLoggedIn(true);
         Alert.alert('你已经是登录状态了');
       }

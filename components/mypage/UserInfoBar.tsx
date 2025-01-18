@@ -26,7 +26,7 @@ const UserInfoBar: React.FC<UserDisplayProps> = ({ Name: name, Avatar: avatar })
       router.push({
         pathname: "/userpage/UserPage",
         params: {
-          id: userId.toString()
+          id: userId
         }
       });
     } else {
