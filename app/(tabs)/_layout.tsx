@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   return (
@@ -17,21 +17,38 @@ export default function TabLayout() {
           fontSize: 12,
           fontWeight: 'bold',
         },
-
       }}
-      >
-      <Tabs.Screen name="(home)" options={{ 
-        headerShown: false,
-        tabBarLabel: '首页',
-        }}/>
-      <Tabs.Screen name="SellPage" options={{ 
-        headerShown: false ,
-        tabBarLabel: '出闲置',
-        }}/>
-      <Tabs.Screen name="MyPage" options={{ 
-        headerShown: false, 
-        tabBarLabel: '我的',
-        }}/>
+    >
+      <Tabs.Screen
+        name="(home)"
+        options={{
+          headerShown: false,
+          tabBarLabel: '首页',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="SellPage"
+        options={{
+          headerShown: false,
+          tabBarLabel: '出闲置',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="add-circle-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="MyPage"
+        options={{
+          headerShown: false,
+          tabBarLabel: '我的',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
