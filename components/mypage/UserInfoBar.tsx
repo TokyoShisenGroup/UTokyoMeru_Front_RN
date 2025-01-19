@@ -5,27 +5,32 @@ import { UserDisplayProps } from '@/lib/types';
 import { router } from 'expo-router';
 import storageApi from '@/lib/storageApi';
 import { useUser, swrConfig, DEFAULT_AVATAR } from '@/lib/dataRequest';
+import { useAuth } from '@/lib/AuthContext';
 
 
 const UserInfoBar = () => {
   const [userId, setUserId] = useState<number | undefined>(undefined);
+  const [userToken, setUserToken] = useState<string | undefined>(undefined);
+  const { isLoggedIn, checkLoginStatus } = useAuth();
   const {data, error, isLoading} = useUser(userId?.toString(), swrConfig);
 
   useEffect(() => {
-    const fetchUserId = async () => {
+    const fetchUser = async () => {
       try {
-        const id = await storageApi.getUserId();
-        setUserId(id);
+        const userinfo = await storageApi.getUserInfo();
+        setUserId(userinfo?.userId);
+        setUserToken(userinfo?.token);
       } catch (error) {
-        console.error("获取用户ID时出错:", error);
+        console.error("获取用户信息时出错:", error);
       }
     };
 
-    fetchUserId();
+    fetchUser();
+    checkLoginStatus();
   }, []);
 
   const handlePress = () => {
-    if (userId !== undefined) {
+    if (userId !== undefined && userToken !== undefined) {
       router.push({
         pathname: "/userpage/UserPage",
         params: {
@@ -38,21 +43,44 @@ const UserInfoBar = () => {
     }
   };
 
-  console.log(data);
-  return (
-    <TouchableOpacity onPress={handlePress}>
-      <View style={styles.userInfoBar}>
-        <Image
-          source={{ uri: data?.avatar || DEFAULT_AVATAR }}
-          style={styles.avatar}
-        />
-        <Text style={styles.username}>{data?.user_name || "Anonymous"}</Text>
-        <View style={styles.touchableButton}>
-          <Ionicons name="chevron-forward-outline" size={24} color="black" />
+  const handleLogin = () => {
+    router.push({
+      pathname: "/loginpage/Login",
+    });
+  };
+
+  console.log("data:",data);
+  if (isLoggedIn) {
+    return (
+      <TouchableOpacity onPress={handlePress}>
+        <View style={styles.userInfoBar}>
+          <Image
+            source={{ uri: data?.avatar || DEFAULT_AVATAR }}
+            style={styles.avatar}
+          />
+          <Text style={styles.username}>{data?.user_name || "Anonymous"}</Text>
+          <View style={styles.touchableButton}>
+            <Ionicons name="chevron-forward-outline" size={24} color="black" />
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  }else{
+    return (
+      <TouchableOpacity onPress={handleLogin}>
+        <View style={styles.userInfoBar}>
+          <Image
+            source={{ uri:  DEFAULT_AVATAR }}
+            style={styles.avatar}
+          />
+          <Text style={styles.username}>{"登录"}</Text>
+          <View style={styles.touchableButton}>
+            <Ionicons name="chevron-forward-outline" size={24} color="black" />
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -74,6 +102,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   touchableButton: {
+    flexDirection: 'row',
     padding: 5,
   },
 });

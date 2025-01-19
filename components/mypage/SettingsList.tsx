@@ -1,44 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import storageApi from '@/lib/storageApi';
 import { whetherAdmin } from '@/utils/webRequest';
 import { router } from 'expo-router';
+import { useAuth } from '@/lib/AuthContext';
 
 const initialSettingsList = [
-  { title: '个人信息', onPress: () => console.log('个人信息') },
-  { title: '通知管理', onPress: () => console.log('通知管理') },
-  { title: '帮助中心', onPress: () => console.log('帮助中心') },
-  { title: '关于我们', onPress: () => console.log('关于我们') },
-  { title: '注册页面', onPress: () => router.push({ pathname: "/loginpage/Register" }) },
-  { title: '登录页面', onPress: () => router.push({ pathname: "/loginpage/Login" }) },
-  { title: '信息页面', onPress: () => router.push({ pathname: "/infopage/info" }) },
+  { title: '个人信息', icon: 'person', onPress: () => console.log('个人信息') },
+  { title: '账户安全', icon: 'lock', onPress: () => console.log('账户安全') },
+  { title: '隐私设置', icon: 'eye-off', onPress: () => console.log('隐私设置') },
+  { title: '通知管理', icon: 'notifications', onPress: () => console.log('通知管理') },
+  { title: '帮助中心', icon: 'help-circle', onPress: () => console.log('帮助中心') },
+  { title: '关于我们', icon: 'information-circle', onPress: () => console.log('关于我们') },
 ];
 
 const SettingsList = () => {
   const [settingsList, setSettingsList] = useState(initialSettingsList);
+  const { isLoggedIn, setIsLoggedIn, checkLoginStatus } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await storageApi.clearAll();
+      setIsLoggedIn(false);
+      router.replace("/");
+      router.push("/loginpage/Login");
+    } catch (error) {
+      console.error("登出错误:", error);
+    }
+  };
+  
 
   useFocusEffect(
     React.useCallback(() => {
-      // console.log("焦点")
-      const checkLoginStatus = async () => {
-        const userEmail = await storageApi.getUserMailaddress();
+      const checkLogin = async () => {
+        const userinfo = await storageApi.getUserInfo();
 
-        if (userEmail) {
+        if (isLoggedIn) {
           // 用户已登录，添加注销选项
           let updatedList = [...initialSettingsList, {
             title: '注销',
             icon: 'log-out-outline',
-            onPress: () => {
-              storageApi.clearAll()
-              router.push({ pathname: "/" })
-            }
-
+            onPress: handleLogout
           }];
 
           // 检查是否为管理员
-          if (await whetherAdmin(userEmail)) {
+          if (isLoggedIn && userinfo && await whetherAdmin(userinfo.mailAddress)) {
             updatedList = [
               ...updatedList,
               {
@@ -50,24 +58,18 @@ const SettingsList = () => {
           }
 
           setSettingsList(updatedList);
-        } else {
-          // 用户未登录，显示登录选项
-          setSettingsList([
-            ...initialSettingsList,
-            {
-              title: '登录',
-              onPress: () => router.push({ pathname: "/loginpage/Login" }),
-            },
-          ]);
+        }else{
+          setSettingsList(initialSettingsList);
         }
       };
+      
       checkLoginStatus();
+      checkLogin();
 
-      // 可选：返回一个清理函数，当屏幕失去焦点时执行
       return () => {
         // 清理逻辑
       };
-    }, [])
+    }, [isLoggedIn])
   );
 
   return (

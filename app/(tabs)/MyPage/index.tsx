@@ -5,15 +5,9 @@ import UserInfoBar from '../../../components/mypage/UserInfoBar';
 import SettingsList from '../../../components/mypage/SettingsList';
 import GoodsSummary from '../../../components/mypage/GoodsSummary';
 import storageApi from '@/lib/storageApi';
-import { useUser } from '@/lib/dataRequest';
-
 
 
 function MyPage() {
-  const id = storageApi.getUserId();
-  const {data, error, isLoading} = useUser(id?.toString() || "");
-
-
   return (
     <View style={styles.container}>
 

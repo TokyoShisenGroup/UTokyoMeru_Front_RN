@@ -140,9 +140,9 @@ const RegisterScreen = () => {
       if (response.status === 200) {
         Alert.alert('注册成功', '您已成功注册！');
         router.push('/loginpage/Login');
-        await storageApi.saveToken(response.data.token);
-        await storageApi.saveUserMailaddress(response.data.user_mailaddress);
-        await storageApi.saveUserName(response.data.user_name);
+
+
+        await storageApi.saveUserInfo(response.data);
       } else if (response.status === 400) {
         Alert.alert('注册失败', '验证码错误');
       } else if (response.status === 500) {

@@ -63,9 +63,10 @@ export interface UserInfo {
 // 定义通用的 fetcher 函数，支持自定义请求选项
 const fetcher = async<T>(url: string,  options?: RequestInit): Promise<T> => {
     // 如果没有自定义 headers，就初始化为一个空对象
-    const token = await storageApi.getToken();
-    if (token == null) {
-        throw new Error("token 无定义")
+    const userinfo = await storageApi.getUserInfo();
+    console.log(userinfo)
+    if (!userinfo?.token) {
+        throw new Error("token is undefined")
     }
     const headers = options?.headers || {};
 
@@ -74,7 +75,7 @@ const fetcher = async<T>(url: string,  options?: RequestInit): Promise<T> => {
         ...options,
         headers: {
             ...headers,
-            'Authorization': `Bearer ${token}`, // 使用 Bearer Token 方式
+            'Authorization': `Bearer ${userinfo.token}`, // 使用 Bearer Token 方式
         }
     };
 
@@ -321,15 +322,14 @@ type FormData = {
         images: uploadedImageUrls,
       };
   
-      const token = await storageApi.getToken();
-      if (!token) {
-        console.error("Token 无定义");
+      const userinfo = await storageApi.getUserInfo();
+      if (!userinfo?.token) {
+        console.error(userinfo,"Token 无定义");
         return;
       }
-  
       const response = await axios.post(`${API_URL}/goods/`, toUploadData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userinfo.token}`,
         },
       });
   
