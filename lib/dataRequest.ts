@@ -87,7 +87,7 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
         url,
         () => fetcher<T>(url, options),
         {
-            refreshInterval: 3000,
+            refreshInterval: 30000,
             revalidateOnFocus: true, // 页面获得焦点时刷新
             revalidateOnReconnect: true, // 网络重新连接时刷新
         }
@@ -100,10 +100,23 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
     };
 };
 
+// 添加全局 SWR 配置
+export const swrConfig = {
+    // 全局配置
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshInterval: 30000,
+    dedupingInterval: 5000,
+};
+
 // 获取所有商品
-export const useGoods =  () => {
-    const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/goods`);
-    return {data, error, isLoading};
+export function useGoods(options = {}) {
+    const { data, error, isLoading } = useFetch<GoodPropsSimplified[]>( `${API_URL}/goods`, options);
+    return {
+        data,
+        error,
+        isLoading
+    };
 }
 
 // 获取用户发布的商品(包括已经卖出去的)
@@ -147,7 +160,7 @@ type adminUsersProps = {
     email: string,
 }
 
-export const useUsers =  () => {
+export const useUsersAdmin =  () => {
 
     const {data, error, isLoading} = useFetch<any>(`${API_URL}/admin/users`);
     if (data == undefined) {
@@ -163,11 +176,7 @@ export const useUsers =  () => {
             email: item.MailAddress,
         })
     })
-    // const myusers= data.data.map((item: any) => ({
-    //     id: item.Id,
-    //     name: item.name,
-    //     email: item.mail_address,
-    // }));
+    
     return {myusers, error, isLoading};
 }
 
@@ -190,7 +199,7 @@ export const useSpecificGoods =  (good_id: number) => {
     return {mygood, error, isLoading};
 }
 
-export const useSpecificUser =  (user_id: number) => {
+export const useSpecificUserAdmin =  (user_id: number) => {
     const {data, error, isLoading} = useFetch<User>(`${API_URL}/admin/users/${user_id}`);
     if (data == undefined) {
         throw new Error("no data")
@@ -226,8 +235,8 @@ type goodsData = {
     sold_number: number;
 }
 
-export const useUserGoodsSummary = () => {
-    const {data, error, isLoading} = useFetch<goodsData>(`${API_URL}/user/data`);
+export const useUserGoodsSummary = (options = {}) => {
+    const {data, error, isLoading} = useFetch<goodsData>(`${API_URL}/user/data`, options);
     return {data, error, isLoading};
 }
 

@@ -2,10 +2,11 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { useUserGoodsSummary } from "@/lib/dataRequest";
+import {swrConfig} from "@/lib/dataRequest";
 
 const GoodsSummary = () => {
 
-    const {data, error, isLoading} = useUserGoodsSummary() || {}
+    const {data, error, isLoading} = useUserGoodsSummary(swrConfig)
 
     return (
         <View style={styles.container}>
