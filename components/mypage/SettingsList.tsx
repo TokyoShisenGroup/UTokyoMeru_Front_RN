@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import storageApi from '@/lib/storageApi';
 import { whetherAdmin } from '@/utils/webRequest';
 import { router } from 'expo-router';
-import { useAuth } from '@/lib/AuthContext';
+import { useAuth } from '@/lib/context/AuthContext';
 
 const initialSettingsList = [
   { title: '个人信息', icon: 'person', onPress: () => console.log('个人信息') },

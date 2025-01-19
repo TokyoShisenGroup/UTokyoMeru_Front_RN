@@ -5,20 +5,29 @@ interface AuthContextType {
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
   checkLoginStatus: () => Promise<void>;
+  // userToken: string | null;
+  // getToken: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [userToken, setUserToken] = useState<string | null>(null);
 
   const checkLoginStatus = async () => {
     const status = await storageApi.isLoggedIn();
     setIsLoggedIn(status);
   };
 
+  // const getToken = async () => {
+  //   const userinfo = await storageApi.getUserInfo();
+  //   setUserToken(userinfo?.token || null);
+  // };
+
   useEffect(() => {
     checkLoginStatus();
+    // getToken();
   }, []);
 
   return (

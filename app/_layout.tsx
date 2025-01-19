@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { AuthProvider } from '@/lib/AuthContext';
+import { AuthProvider } from '@/lib/context/AuthContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

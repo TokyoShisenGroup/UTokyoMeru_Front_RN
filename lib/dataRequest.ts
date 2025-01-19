@@ -64,9 +64,9 @@ export interface UserInfo {
 const fetcher = async<T>(url: string,  options?: RequestInit): Promise<T> => {
     // 如果没有自定义 headers，就初始化为一个空对象
     const userinfo = await storageApi.getUserInfo();
-    console.log(userinfo)
     if (!userinfo?.token) {
-        throw new Error("token is undefined")
+      console.log("userinfo:",userinfo)
+      throw new Error("token is undefined")
     }
     const headers = options?.headers || {};
 

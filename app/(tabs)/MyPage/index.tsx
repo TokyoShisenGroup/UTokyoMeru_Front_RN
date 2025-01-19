@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import UserInfoBar from '../../../components/mypage/UserInfoBar';
 import SettingsList from '../../../components/mypage/SettingsList';
 import GoodsSummary from '../../../components/mypage/GoodsSummary';
-import storageApi from '@/lib/storageApi';
+import { useAuth } from '@/lib/context/AuthContext';
 
 
 function MyPage() {
+  const { isLoggedIn, checkLoginStatus } = useAuth();
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
   return (
     <View style={styles.container}>
 
@@ -16,7 +19,7 @@ function MyPage() {
         <UserInfoBar/>
         {/* 设置选项 */}
 
-        <GoodsSummary />
+        {isLoggedIn && <GoodsSummary />}
         <SettingsList />
       </SafeAreaView>
     </View>

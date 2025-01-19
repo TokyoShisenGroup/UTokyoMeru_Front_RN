@@ -8,6 +8,7 @@ import UserInfoArea from '@/components/userpage/UserInfoArea';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HeaderUserInfo from '@/components/userpage/HeaderUserInfo';
 import { useUserSales, useUser, swrConfig, DEFAULT_AVATAR } from '@/lib/dataRequest';
+import { useAuth } from '@/lib/context/AuthContext';
 
 
 const UserPage: React.FC<UserDisplayProps> = () =>{ 
@@ -15,6 +16,7 @@ const UserPage: React.FC<UserDisplayProps> = () =>{
     const {data: goodsData, error: goodsError, isLoading: goodsLoading} = useUserSales(params.id as string, swrConfig)
     const {data: userData, error: userError, isLoading: userLoading} = useUser(params.id as string, swrConfig)
     console.log("params.id:", params.id, "type:", typeof(params.id))
+
     if (goodsLoading || userLoading){
         return (
             <SafeAreaView>

@@ -8,7 +8,7 @@ import { API_URL } from '@/constants/config';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import storageApi from '@/lib/storageApi';
 import Reset from '@/components/loginpage/Reset';
-import { useAuth } from '@/lib/AuthContext';
+import { useAuth } from '@/lib/context/AuthContext';
 
 const styles = StyleSheet.create({
   safeArea: {

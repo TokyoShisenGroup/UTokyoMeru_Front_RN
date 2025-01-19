@@ -5,7 +5,7 @@ import { UserDisplayProps } from '@/lib/types';
 import { router } from 'expo-router';
 import storageApi from '@/lib/storageApi';
 import { useUser, swrConfig, DEFAULT_AVATAR } from '@/lib/dataRequest';
-import { useAuth } from '@/lib/AuthContext';
+import { useAuth } from '@/lib/context/AuthContext';
 
 
 const UserInfoBar = () => {
@@ -30,7 +30,7 @@ const UserInfoBar = () => {
   }, []);
 
   const handlePress = () => {
-    if (userId !== undefined && userToken !== undefined) {
+    if (userId && userToken ) {
       router.push({
         pathname: "/userpage/UserPage",
         params: {
@@ -73,7 +73,7 @@ const UserInfoBar = () => {
             source={{ uri:  DEFAULT_AVATAR }}
             style={styles.avatar}
           />
-          <Text style={styles.username}>{"登录"}</Text>
+          <Text style={styles.username}>{"登录/注册"}</Text>
           <View style={styles.touchableButton}>
             <Ionicons name="chevron-forward-outline" size={24} color="black" />
           </View>
