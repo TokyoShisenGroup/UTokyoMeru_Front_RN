@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, RefreshControl} from 'react-native';
 import {GoodPropsSimplified} from '../../lib/types';
 import GoodCard from './GoodCard';
 import axios from 'axios';
@@ -34,15 +34,34 @@ const Column: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
 
 const GoodsList: React.FC<{data: GoodPropsSimplified[]}> = ({data}) => {
   const [dataFromAPI, setDataFromAPI] = useState<GoodPropsSimplified[]>(data || []);
+  const [refreshing, setRefreshing] = useState(false);
   const {leftColumn: l, rightColumn: r} = splitDataIntoColumns(dataFromAPI || []);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const response = await axios.get(`${API_URL}/goods`);
+      setDataFromAPI(response.data);
+    } catch (error) {
+      console.error('刷新数据时出错:', error);
+    } finally {
+      setRefreshing(false);
+      console.log('刷新完成');
+    }
+  };
 
   return (
     <>
-            <ISearchBar setData={setDataFromAPI} data={data}/>
-            <FlatList
+    <ISearchBar setData={setDataFromAPI} data={data}/>
+    <FlatList
       data={[{key: 'columns'}]}
       keyExtractor={item => item.key}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
       renderItem={() => (
         <View style={styles.container}>
           <View style={styles.column}>

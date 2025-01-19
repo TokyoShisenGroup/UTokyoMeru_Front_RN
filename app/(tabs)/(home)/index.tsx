@@ -1,16 +1,17 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import GoodsList from '@/components/homepage/GoodsList';
-import ISearchBar from '@/components/homepage/ISearchBar';
-import {GoodPropsSimplified} from '@/lib/types';
 import {SafeAreaView, Text, View} from 'react-native';
-import { useState } from 'react';
 import {useGoods} from "@/lib/dataRequest";
-
-
+import {GoodPropsSimplified} from '@/lib/types';
 
 function HomeScreen() {
+    const {data, error, isLoading} = useGoods({
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        refreshInterval: 30000,
+        dedupingInterval: 5000,
+    });
 
-    const {data, error, isLoading} = useGoods() || {}
     if (isLoading){
         return (
             <SafeAreaView>
@@ -18,9 +19,10 @@ function HomeScreen() {
             </SafeAreaView>
         );
     }
+    
     return (
         <SafeAreaView>
-            <GoodsList data={data || []} />
+            <GoodsList data={data as GoodPropsSimplified[]} />
         </SafeAreaView>
     );
 }

@@ -7,12 +7,13 @@ import { whetherAdmin } from '@/utils/webRequest';
 import { router } from 'expo-router';
 
 const initialSettingsList = [
-  { title: '个人信息', icon: 'person', onPress: () => console.log('个人信息') },
-  { title: '账户安全', icon: 'lock', onPress: () => console.log('账户安全') },
-  { title: '隐私设置', icon: 'eye-off', onPress: () => console.log('隐私设置') },
-  { title: '通知管理', icon: 'notifications', onPress: () => console.log('通知管理') },
-  { title: '帮助中心', icon: 'help-circle', onPress: () => console.log('帮助中心') },
-  { title: '关于我们', icon: 'information-circle', onPress: () => console.log('关于我们') },
+  { title: '个人信息', onPress: () => console.log('个人信息') },
+  { title: '通知管理', onPress: () => console.log('通知管理') },
+  { title: '帮助中心', onPress: () => console.log('帮助中心') },
+  { title: '关于我们', onPress: () => console.log('关于我们') },
+  { title: '注册页面', onPress: () => router.push({ pathname: "/loginpage/Register" }) },
+  { title: '登录页面', onPress: () => router.push({ pathname: "/loginpage/Login" }) },
+  { title: '信息页面', onPress: () => router.push({ pathname: "/infopage/info" }) },
 ];
 
 const SettingsList = () => {
@@ -55,7 +56,6 @@ const SettingsList = () => {
             ...initialSettingsList,
             {
               title: '登录',
-              icon: 'log-in-outline',
               onPress: () => router.push({ pathname: "/loginpage/Login" }),
             },
           ]);

@@ -285,7 +285,7 @@ const RegisterScreen = () => {
         control={control}
         rules={{
           required: '确认密码为必填项',
-          validate: (value) => value === control._fields.password?._f.value || '两次输入的密码不一致'
+          validate: (value) => value === watch("password") || '两次输入的密码不一致'
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <View>

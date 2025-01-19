@@ -1,6 +1,6 @@
 import { API_URL } from '@/constants/config';
-import { useGoods, useSpecificGoods, useUsers } from '@/lib/dataRequest';
-import { useSpecificUser } from '@/lib/dataRequest';
+import { useGoods, useSpecificGoods, useUsersAdmin } from '@/lib/dataRequest';
+import { useSpecificUserAdmin } from '@/lib/dataRequest';
 import storageApi from '@/lib/storageApi';
 import React, { useEffect, useState } from 'react';
 import {
@@ -74,7 +74,7 @@ const getGoods = async () => {
 };
 
 const AdminControl: React.FC = () => {
-  const fetchedUsers =  useUsers();
+  const fetchedUsers =  useUsersAdmin();
   const fetchedGoods =  useGoods();
   console.log(fetchedUsers)
   // Fetch data on mount
