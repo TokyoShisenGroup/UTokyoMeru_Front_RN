@@ -3,6 +3,7 @@ import React from 'react';
 import { GoodPropsSimplified } from '@/lib/types';
 import { ListItem, Avatar } from 'react-native-elements';
 import { router } from 'expo-router';
+import { DEFAULT_AVATAR } from '@/lib/dataRequest';
 interface ListProps {
     goods: GoodPropsSimplified[];
 }

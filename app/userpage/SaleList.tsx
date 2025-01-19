@@ -10,8 +10,8 @@ const SaleList = () => {
     const [id, setId] = useState<number | undefined>(undefined);
     useEffect(()=>{
         const fetchID = async () => {
-            const id = await storageApi.getUserId();
-            setId(id);
+            const userinfo = await storageApi.getUserInfo();
+            setId(userinfo?.userId);
         }
         fetchID();
     },[])

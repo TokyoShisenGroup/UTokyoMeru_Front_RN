@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { AuthProvider } from '@/lib/context/AuthContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -27,21 +28,23 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="goodspage/GoodsDetail" options={{ headerShown: false }} />
-        <Stack.Screen name="loginpage/Login" options={{ headerShown: false }} />
-        <Stack.Screen name="loginpage/Register" options={{ headerShown: false }} />
-        <Stack.Screen name="userpage/UserPage" options={{ headerShown: false }} />
-        <Stack.Screen name="userpage/FavoList" options={{ headerShown: false }} />
-        <Stack.Screen name="userpage/SaleList" options={{ headerShown: false }} />
-        <Stack.Screen name="userpage/BoughtList" options={{ headerShown: false }} />
-        <Stack.Screen name="userpage/SoldList" options={{ headerShown: false }} />
-        <Stack.Screen name="infopage/info" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-        <Stack.Screen name="adminpage/AdminControl" options={{ headerShown: true }} />
-      </Stack>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="goodspage/GoodsDetail" options={{ headerShown: false }} />
+          <Stack.Screen name="loginpage/Login" options={{ headerShown: false }} />
+          <Stack.Screen name="loginpage/Register" options={{ headerShown: false }} />
+          <Stack.Screen name="userpage/UserPage" options={{ headerShown: false }} />
+          <Stack.Screen name="userpage/FavoList" options={{ headerShown: false }} />
+          <Stack.Screen name="userpage/SaleList" options={{ headerShown: false }} />
+          <Stack.Screen name="userpage/BoughtList" options={{ headerShown: false }} />
+          <Stack.Screen name="userpage/SoldList" options={{ headerShown: false }} />
+          <Stack.Screen name="infopage/info" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+          <Stack.Screen name="adminpage/AdminControl" options={{ headerShown: true }} />
+        </Stack>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

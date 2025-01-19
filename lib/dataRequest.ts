@@ -13,6 +13,7 @@ import useSWRImmutable from 'swr/immutable';
  * Good
  */
 const APITOKEN = "1p4sVu5JstjtNfFh4lpQsqFtlgiS1DLa"
+export const DEFAULT_AVATAR = "https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg"
 const smmsClient = new SMMSApiClient(APITOKEN);
 
 export interface User {
@@ -24,26 +25,19 @@ export interface User {
  * User
  */
 export interface User {
-    /**
-     * url
-     */
     avatar: null | string;
     birthday: null | string;
     created_at: string;
     deleted_at: null | string;
     gender: null | string;
-    /**
-     * ID
-     */
+
     id: number;
     is_banned: boolean;
     is_deleted: boolean;
     mail_address: string;
     mail_code: null | string;
     name: string;
-    /**
-     * md5
-     */
+
     password: string;
     phone_number: null | string;
     rating: number;
@@ -53,12 +47,26 @@ export interface User {
     user_class: string;
 }
 
+export interface UserInfo {
+  id: number;
+  user_name: string;
+  mail_address: string;
+  avatar: string | null;
+  user_class: string;
+  rating: number | null;
+  rating_count: number | null;
+  bio: string | null;
+  is_deleted: boolean;
+  is_banned: boolean;
+}
+
 // 定义通用的 fetcher 函数，支持自定义请求选项
 const fetcher = async<T>(url: string,  options?: RequestInit): Promise<T> => {
     // 如果没有自定义 headers，就初始化为一个空对象
-    const token = await storageApi.getToken();
-    if (token == null) {
-        throw new Error("token 无定义")
+    const userinfo = await storageApi.getUserInfo();
+    if (!userinfo?.token) {
+      console.log("userinfo:",userinfo)
+      throw new Error("token is undefined")
     }
     const headers = options?.headers || {};
 
@@ -67,7 +75,7 @@ const fetcher = async<T>(url: string,  options?: RequestInit): Promise<T> => {
         ...options,
         headers: {
             ...headers,
-            'Authorization': `Bearer ${token}`, // 使用 Bearer Token 方式
+            'Authorization': `Bearer ${userinfo.token}`, // 使用 Bearer Token 方式
         }
     };
 
@@ -119,38 +127,47 @@ export function useGoods(options = {}) {
     };
 }
 
-// 获取用户发布的商品(包括已经卖出去的)
-export const useUserSales =  (user_id: string) => {
+export const useUser = (user_id: string | undefined, options = {}) => {
+  const {data, error, isLoading} = useFetch<UserInfo>(
+    user_id ? `${API_URL}/user/${user_id}` : "",
+    options
+  );
+  
+  return {data, error, isLoading};
+};
 
-  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/sales?user_id=${user_id}`);
+// 获取用户发布的商品(包括已经卖出去的)
+export const useUserSales =  (user_id: string, options = {}) => {
+
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/sales?user_id=${user_id}`, options);
   return {data, error, isLoading};
 }
 
 // 获取用户正在出售的商品
-export const useUserSellings =  (user_id: string) => {
+export const useUserSellings =  (user_id: string, options = {}) => {
 
-  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/selling?user_id=${user_id}`);
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/selling?user_id=${user_id}`, options);
   return {data, error, isLoading};
 }
 
 // 获取用户卖出的商品
-export const useUserSolds =  () => {
+export const useUserSolds =  (options = {}) => {
 
-  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/sold`);
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/sold`, options);
   return {data, error, isLoading};
 }
 
 // 获取用户收藏的商品
-export const useUserFavorites =  () => {
+export const useUserFavorites =  (options = {}) => {
 
-  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/favolist`);
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/favolist`, options);
   return {data, error, isLoading};
 }
 
 // 获取用户买到的商品
-export const useUserBought =  () => {
+export const useUserBought =  (options = {}) => {
 
-  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/bought`);
+  const {data, error, isLoading} = useFetch<GoodPropsSimplified[]>(`${API_URL}/user/bought`, options);
   return {data, error, isLoading};
 }
 
@@ -160,9 +177,9 @@ type adminUsersProps = {
     email: string,
 }
 
-export const useUsersAdmin =  () => {
+export const useUsersAdmin =  (options = {}) => {
 
-    const {data, error, isLoading} = useFetch<any>(`${API_URL}/admin/users`);
+    const {data, error, isLoading} = useFetch<any>(`${API_URL}/admin/users`, options);
     if (data == undefined) {
         throw new Error("no data")
         return
@@ -305,15 +322,14 @@ type FormData = {
         images: uploadedImageUrls,
       };
   
-      const token = await storageApi.getToken();
-      if (!token) {
-        console.error("Token 无定义");
+      const userinfo = await storageApi.getUserInfo();
+      if (!userinfo?.token) {
+        console.error(userinfo,"Token 无定义");
         return;
       }
-  
       const response = await axios.post(`${API_URL}/goods/`, toUploadData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userinfo.token}`,
         },
       });
   

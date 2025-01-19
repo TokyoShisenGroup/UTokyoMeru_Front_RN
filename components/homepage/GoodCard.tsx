@@ -4,7 +4,7 @@ import {Text, Card} from '@rneui/themed';
 import {GoodPropsSimplified} from '../../lib/types';
 import {router} from 'expo-router';
 import FastImage from 'react-native-fast-image';
-
+import {DEFAULT_AVATAR} from '@/lib/dataRequest';
 
 interface GoodCardProps {
   item: GoodPropsSimplified;
@@ -54,7 +54,7 @@ const GoodCard: React.FC<GoodCardProps> = ({item}) => {
             <Image
               style={styles.avatar}
               resizeMode="cover"
-              source={{uri: item.user?.Avatar ||"https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg"}}
+              source={{uri: item.user?.Avatar ||DEFAULT_AVATAR}}
             />
             <Text style={styles.name}>{item.user?.Name||"匿名"}</Text>
           </View>

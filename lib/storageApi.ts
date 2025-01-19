@@ -22,6 +22,16 @@ const storage = new Storage({
   // sync: require('./sync'),
 });
 
+// 定义用户信息类型
+export interface UserInfo {
+  token: string;
+  mailAddress: string;
+  userName: string;
+  userId: number;
+}
+
+const USER_INFO_KEY = 'userInfo';
+
 // 封装API方法
 const storageApi = {
   init: async (): Promise<void> => {
@@ -66,75 +76,77 @@ const storageApi = {
     await storageApi.init();
   },
 
+  // 检查登录状态
+  isLoggedIn: async (): Promise<boolean> => {
+    try {
+      const userInfo = await storage.load({ key: USER_INFO_KEY });
+      // 检查是否有 token 且 token 不为空
+      return !!(userInfo?.token);
+    } catch (error) {
+      return false;
+    }
+  },
+
   // 清除所有数据
   clearAll: async (): Promise<void> => {
     try {
-      await storage.clearMap();  // 清除所有数据
-      // 或者明确列出所有需要清除的键
-      await storageApi.save("token", null);
-      await storageApi.save("usermailaddress", null);
-      await storageApi.save("username", null);
-      await storageApi.save("userid", null);
+      // 完全清除存储
+      await storage.clearMap();
       
-      console.log('All data cleared.');
+      // 确保用户信息被清除
+      await storage.save({
+        key: USER_INFO_KEY,
+        data: null
+      });
+      
+      console.log('All data cleared successfully');
     } catch (error) {
       console.error('Error clearing all data:', error);
     }
-    await storageApi.init();
   },
 
-  getToken: async (): Promise<string | undefined> => {
-    if (!await storageApi.load("token")) {
-      console.log("token not found");
-      return undefined;
+  // 存储所有用户信息
+  saveUserInfo: async (userInfo: Partial<UserInfo>): Promise<void> => {
+    try {
+      // 获取现有数据，与新数据合并
+      const existingData = await storage.load({ key: USER_INFO_KEY }).catch(() => ({}));
+      const newData = { ...existingData, ...userInfo };
+      
+      await storage.save({
+        key: USER_INFO_KEY,
+        data: newData,
+      });
+      console.log('User info saved successfully');
+    } catch (error) {
+      console.error('Error saving user info:', error);
     }
-    await storageApi.init();
-    return await storageApi.load("token");
   },
-  getUserMailaddress: async (): Promise<string | undefined> => {
-    if (await storageApi.load("usermailaddress") === undefined) {
-      console.log("usermailaddress not found");
-      return undefined;
+
+  // 获取所有用户信息
+  getUserInfo: async (): Promise<UserInfo | null> => {
+    try {
+      const data = await storage.load({ key: USER_INFO_KEY });
+      console.log("Retrieved user info:", data);
+      if (!data) {
+        console.log("No user info found");
+        return null;
+      }
+      return data;
+    } catch (error) {
+      console.error("Error loading user info:", error);
+      return null;
     }
-    await storageApi.init();
-    return await storageApi.load("usermailaddress");
   },
-  getUserName: async (): Promise<string | undefined> => {
-    if (await storageApi.load("username") === undefined) {
-      console.log("username not found");
-      return undefined;
+
+  // 清除用户信息
+  clearUserInfo: async (): Promise<void> => {
+    try {
+      await storage.remove({ key: USER_INFO_KEY });
+      console.log('User info cleared');
+    } catch (error) {
+      console.error('Error clearing user info:', error);
     }
-    await storageApi.init();
-    return await storageApi.load("username");
   },
-  getUserId: async (): Promise<number | undefined> => {
-    if (await storageApi.load("userid") === undefined) {
-      console.log("userid not found");
-      return undefined;
-    }
-    await storageApi.init();
-    const id = await (storageApi.load("userid"));
-    console.log("rawid:", id)
-    console.log("parsedid:", parseInt(id, 10))
-    return parseInt(id, 10);
-  },
-  saveToken: async (token: string): Promise<void> => {
-    await storageApi.save("token", token);
-    await storageApi.init();
-  },
-  saveUserMailaddress: async (User_Mailaddress: string): Promise<void> => {
-    await storageApi.save("usermailaddress", User_Mailaddress);
-    await storageApi.init();
-  },
-  saveUserName: async (User_Name: string): Promise<void> => {
-    await storageApi.save("username", User_Name);
-    await storageApi.init();
-  },
-  saveUserId: async (User_Id: number): Promise<void> => {
-    await storageApi.save("userid", User_Id.toString());
-    console.log("用户的id是", User_Id);
-    await storageApi.init();
-  }
 };
 
 // 导出封装的 storageApi

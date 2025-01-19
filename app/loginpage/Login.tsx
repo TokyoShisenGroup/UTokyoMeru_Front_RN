@@ -7,8 +7,8 @@ import axios from 'axios';
 import { API_URL } from '@/constants/config';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import storageApi from '@/lib/storageApi';
-import { Button } from '@rneui/base';
 import Reset from '@/components/loginpage/Reset';
+import { useAuth } from '@/lib/context/AuthContext';
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -92,24 +92,7 @@ type FormData = {
 
 const Login: React.FC = () => {
   const { control, handleSubmit } = useForm<FormData>();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // storageApi.clearAll()
-  const logout = () => {
-    storageApi.clearAll();
-    setIsLoggedIn(false);
-  }
-  useEffect(() => {
-    // 检查是否已经登录
-    const checkLoginStatus = async () => {
-      const userMailaddress = await storageApi.getUserMailaddress()
-      console.log(userMailaddress)
-      if (userMailaddress !== null) {
-        setIsLoggedIn(true);
-        Alert.alert('你已经是登录状态了');
-      }
-    };
-    checkLoginStatus();
-  }, []);
+  const { setIsLoggedIn } = useAuth();
 
   const handleBackPress = () => {
     router.back();
@@ -122,21 +105,23 @@ const Login: React.FC = () => {
       const response = await axios.post(`${API_URL}/login/password`, data);
       console.log("response");
       console.log(response.data);
-      await storageApi.saveToken(response.data.token);
-      await storageApi.saveUserMailaddress(response.data.mail_address);
-      await storageApi.saveUserName(response.data.user_name);
-      await storageApi.saveUserId(response.data.id);
-      setIsLoggedIn(true); // 登录成功后更新状态
+      
+      // 使用新的方法一次性保存所有用户信息
+      await storageApi.saveUserInfo({
+        token: response.data.token,
+        mailAddress: response.data.mail_address,
+        userName: response.data.user_name,
+        userId: response.data.id
+      });
+      
+      setIsLoggedIn(true);
+      router.navigate("/");
     } catch (error) {
       console.error('登录失败:', error);
       Alert.alert('登录失败', '发生了一个错误，请稍后重试');
-      setIsLoggedIn(false); // 登录失败后更新状态
+      setIsLoggedIn(false);
     }
   };
-
-  if (isLoggedIn) {
-    router.navigate("/");
-  }
 
   return (
     <SafeAreaView style={styles.safeArea}>

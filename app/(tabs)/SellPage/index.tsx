@@ -5,8 +5,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useForm, Controller } from 'react-hook-form';
 import { router } from 'expo-router';
-import { UPLOAD_IMAGE_URL, API_URL } from '@/constants/config';
-import axios from 'axios';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import storageApi from "@/lib/storageApi"; // 请确保路径正确
 import { useSellItemAPI } from '@/lib/dataRequest';
@@ -80,15 +78,15 @@ const SellItemPage: React.FC = () => {
     try {
       // 移除 tagInput
       const { tagInput, ...restData } = data;
-      const seller_id = await storageApi.getUserId()
-      if(seller_id == undefined)
+      const userinfo = await storageApi.getUserInfo();
+      if(userinfo == undefined)
       {
         console.log("用户未登录")
         return
       }
       const postData = {
         ...restData,
-        seller_id: seller_id,
+        seller_id: userinfo.userId.toString(),
         is_invisible: false,
         is_deleted: false,
         is_bought: false,
