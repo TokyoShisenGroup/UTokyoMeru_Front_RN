@@ -3,6 +3,7 @@ import React from 'react';
 import { GoodPropsSimplified } from '@/lib/types';
 import { ListItem, Avatar } from 'react-native-elements';
 import { router } from 'expo-router';
+import { DEFAULT_AVATAR } from '@/lib/dataRequest';
 interface ListProps {
     goods: GoodPropsSimplified[];
 }
@@ -29,7 +30,7 @@ const List: React.FC<ListProps> = ({ goods }) => {
                             <ListItem.Subtitle style={styles.price}>{good.price}</ListItem.Subtitle>
                         </View>
                         <View style={styles.user}>
-                            <Image style={styles.avatar} source={{ uri: good.user?.Avatar || DEFAULT_AVATAR }} />
+                            <Image style={styles.avatar} source={{ uri: good.user?.Avatar || "https://pic.616pic.com/ys_img/00/06/27/5m1AgeRLf3.jpg" }} />
                             <Text style={styles.name}>{good.user?.Name}</Text>
                         </View>
                     </ListItem.Content>

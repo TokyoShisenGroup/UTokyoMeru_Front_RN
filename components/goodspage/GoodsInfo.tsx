@@ -25,7 +25,7 @@ const GoodsInfo: React.FC<GoodProps> = (props) => {
                     onPress={() => {console.log(tag,"pressed")}}
                     />
                 ))}
-        </View>
+            </View>
             <UserCard {...props.user} />
         </View>
     )

@@ -21,9 +21,9 @@ const Button: React.FC<ButtonProps> = ({ label, icon, onPress }) => (
 // 待完成...
 const ButtonSheets: React.FC = () => {
   const buttons = [
-    { label: '收藏', icon: 'home', onPress: () => console.log('收藏被点击') },
-    { label: '评论', icon: 'search', onPress: () => console.log('评论被点击') },
-    { label: '查相关', icon: 'favorite', onPress: () => console.log('查相关被点击') },
+    { label: '收藏', icon: 'favorite', onPress: () => console.log('收藏被点击') },
+    { label: '评论', icon: 'comment', onPress: () => console.log('评论被点击') },
+    { label: '查相关', icon: 'search', onPress: () => console.log('查相关被点击') },
     { label: '分享', icon: 'share', onPress: () => console.log('分享被点击') },
     // 添加更多按钮...
   ];
