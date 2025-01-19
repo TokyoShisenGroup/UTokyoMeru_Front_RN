@@ -4,9 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { UserDisplayProps } from '@/lib/types';
 import { router } from 'expo-router';
 import storageApi from '@/lib/storageApi';
+import { useUser, swrConfig, DEFAULT_AVATAR } from '@/lib/dataRequest';
 
-const UserInfoBar: React.FC<UserDisplayProps> = ({ Name: name, Avatar: avatar }) => {
+
+const UserInfoBar = () => {
   const [userId, setUserId] = useState<number | undefined>(undefined);
+  const {data, error, isLoading} = useUser(userId?.toString(), swrConfig);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -35,14 +38,15 @@ const UserInfoBar: React.FC<UserDisplayProps> = ({ Name: name, Avatar: avatar })
     }
   };
 
+  console.log(data);
   return (
     <TouchableOpacity onPress={handlePress}>
       <View style={styles.userInfoBar}>
         <Image
-          source={{ uri: avatar }}
+          source={{ uri: data?.avatar || DEFAULT_AVATAR }}
           style={styles.avatar}
         />
-        <Text style={styles.username}>{name}</Text>
+        <Text style={styles.username}>{data?.user_name || "Anonymous"}</Text>
         <View style={styles.touchableButton}>
           <Ionicons name="chevron-forward-outline" size={24} color="black" />
         </View>
