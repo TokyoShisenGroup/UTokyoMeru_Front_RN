@@ -77,7 +77,7 @@ function GoodsDetail() {
                 <GoodsSlides {...item} />
                 <GoodsInfo {...item} />
             </ScrollView>
-            <Footer />
+            <Footer id={item.user.user_id} />
             </SafeAreaView>
         </>
     )

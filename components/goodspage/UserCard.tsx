@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { UserProps } from '@/lib/types';
 import StarRating from '@/components/goodspage/StarRating';
 import Icon from '@expo/vector-icons/Ionicons';
+import { DEFAULT_AVATAR } from '@/lib/dataRequest';
 
 const UserCard: React.FC<UserProps> = ( user ) => {
   const navigation = useNavigation();
@@ -17,13 +18,13 @@ const UserCard: React.FC<UserProps> = ( user ) => {
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
       <View style={styles.avatarContainer}>
-        <Image source={{ uri: user.Avatar || DEFAULT_AVATAR }} style={styles.avatar} />
+        <Image source={{ uri: user.avatar || DEFAULT_AVATAR }} style={styles.avatar} />
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.name}>{user.Name}</Text>
+        <Text style={styles.name}>{user.name}</Text>
         <View style={styles.ratingContainer}>
-          <StarRating rating={user.Rating} size={14} color="#FFD700" />
-          <Text style={styles.ratingText}>{user.Rating?.toFixed(1)}</Text>
+          <StarRating rating={user.rating} size={14} color="#FFD700" />
+          <Text style={styles.ratingText}>{user.rating?.toFixed(1)}</Text>
         </View>
       </View>
       <Icon name="chevron-forward" size={24} color="#CCCCCC" style={styles.chevron} />

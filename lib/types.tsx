@@ -33,15 +33,15 @@ export interface ColumnProps {
   }
   
 export interface UserDisplayProps {
-    Name: string;
-    Avatar: string;
+    name: string;
+    avatar: string;
 }
 
 export interface UserProps {
-    UserID: string;
-    Name: string;
-    Avatar: string;
-    Rating: number;
+    user_id: string;
+    name: string;
+    avatar: string;
+    rating: number;
 }
 
 export interface TagProps {

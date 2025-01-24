@@ -1,16 +1,17 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { router } from 'expo-router';
 const onFavoriteButtonPress = () => {
   console.log("收藏被点击");
 };
 
-const onBuyButtonPress = () => {
+const onBuyButtonPress = (id: string) => {
   console.log("购买被点击");
+  router.push({pathname: "/chat", params: {id: id}});
 };
 
-const Footer: React.FC = () => {
+const Footer: React.FC<{id: string}> = ({id}) => {
   return (
     <View style={styles.footer}>
       <TouchableOpacity 
@@ -21,7 +22,7 @@ const Footer: React.FC = () => {
       </TouchableOpacity>
       <TouchableOpacity 
         style={styles.buyButton} 
-        onPress={onBuyButtonPress}
+        onPress={() => onBuyButtonPress(id)}
       >
         <Text style={styles.buyButtonText}>购买</Text>
       </TouchableOpacity>

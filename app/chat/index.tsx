@@ -28,14 +28,12 @@ export default function ChatScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const theme = useTheme();
   const {id} = useLocalSearchParams();
-  const {data: user, error: userError, isLoading: userLoading} = useUser(id.toString());
+  const {data: user, error: userError, isLoading: userLoading} = useUser(id as string);
 
-  if (user===undefined){ 
-    return <Text>用户不存在</Text>;
-  }
+  console.log('Chat Screen ID:', id);
 
   const handleSend = () => {
-    if (inputText.trim()) {
+    if (inputText.trim() && user) {
       const newMessage: MessageProps = {
         id: Date.now(),
         content: inputText.trim(),
@@ -52,55 +50,71 @@ export default function ChatScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-        {/* Header */}
-        <SafeAreaView style={styles.header}>
-          <IconButton
-            icon={props => <Icon name="arrow-left" {...props} />}
-            onPress={() => router.back()}
-          />
-          <Image source={{ uri: user.avatar || DEFAULT_AVATAR }} style={styles.avatar} />
-          <Text style={styles.headerTitle}>{user.user_name}</Text>
-        </SafeAreaView>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-
-        {/* 聊天记录区域 */}
-        <ScrollView
-          ref={scrollViewRef}
-          style={styles.messageContainer}
-          onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
-          keyboardShouldPersistTaps="handled"
-          onTouchStart={() => Keyboard.dismiss()}
-        >
-          {messages.map((message) => (
-            <Message
-              key={message.id}
-              {...message}
-            />
-          ))}
-        </ScrollView>
-
-        {/* 底部输入区域 */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={inputText}
-            onChangeText={setInputText}
-            onSubmitEditing={handleSend}
-            placeholder="输入消息..."
-            returnKeyType="send"
-          />
-          {/*
-          这部分是输入框的扩展功能，需要等到支持发送非文本类型时再添加
-          <IconButton
-            icon={props => <Icon name="plus" {...props} />}
-            onPress={() => {console.log("plus")}}
-          />
-          */}
+      {userLoading ? (
+        <View style={styles.centerContainer}>
+          <Text>加载中...</Text>
         </View>
-      </KeyboardAvoidingView>
+      ) : userError ? (
+        <View style={styles.centerContainer}>
+          <Text>加载失败: {userError.message}</Text>
+        </View>
+      ) : !user ? (
+        <View style={styles.centerContainer}>
+          <Text>用户不存在</Text>
+        </View>
+      ) : (
+        <>
+          {/* Header */}
+          <SafeAreaView style={styles.header}>
+            <IconButton
+              icon={props => <Icon name="arrow-left" {...props} />}
+              onPress={() => router.back()}
+            />
+            <Image source={{ uri: user.avatar || DEFAULT_AVATAR }} style={styles.avatar} />
+            <Text style={styles.headerTitle}>{user.user_name}</Text>
+          </SafeAreaView>
+          
+          <KeyboardAvoidingView 
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
+            {/* 聊天记录区域 */}
+            <ScrollView
+              ref={scrollViewRef}
+              style={styles.messageContainer}
+              onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+              keyboardShouldPersistTaps="handled"
+              onTouchStart={() => Keyboard.dismiss()}
+            >
+              {messages.map((message) => (
+                <Message
+                  key={message.id}
+                  {...message}
+                />
+              ))}
+            </ScrollView>
+
+            {/* 底部输入区域 */}
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                value={inputText}
+                onChangeText={setInputText}
+                onSubmitEditing={handleSend}
+                placeholder="输入消息..."
+                returnKeyType="send"
+              />
+              {/*
+              这部分是输入框的扩展功能，需要等到支持发送非文本类型时再添加
+              <IconButton
+                icon={props => <Icon name="plus" {...props} />}
+                onPress={() => {console.log("plus")}}
+              />
+              */}
+            </View>
+          </KeyboardAvoidingView>
+        </>
+      )}
     </SafeAreaView>
   );
 }
@@ -146,5 +160,10 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-  }
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

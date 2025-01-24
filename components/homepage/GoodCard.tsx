@@ -54,9 +54,9 @@ const GoodCard: React.FC<GoodCardProps> = ({item}) => {
             <Image
               style={styles.avatar}
               resizeMode="cover"
-              source={{uri: item.user?.Avatar ||DEFAULT_AVATAR}}
+              source={{uri: item.user?.avatar ||DEFAULT_AVATAR}}
             />
-            <Text style={styles.name}>{item.user?.Name||"匿名"}</Text>
+            <Text style={styles.name}>{item.user?.name||"匿名"}</Text>
           </View>
         </Card>
       </TouchableOpacity>
