@@ -133,7 +133,7 @@ const storageApi = {
       }
       return data;
     } catch (error) {
-      console.error("Error loading user info:", error);
+      console.log("Failed to load user info:", error);
       return null;
     }
   },

@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   Text, 
   TextInput, 
+  Image,
   ScrollView, 
   StyleSheet, 
   KeyboardAvoidingView, 
@@ -15,16 +16,23 @@ import {
   useTheme 
 } from '@react-native-material/core';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 import { MessageProps} from '@/components/chatpage/message';
 import Message from '@/components/chatpage/message';
+import { useUser, DEFAULT_AVATAR } from '@/lib/dataRequest';
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [inputText, setInputText] = useState('');
   const scrollViewRef = useRef<ScrollView>(null);
   const theme = useTheme();
+  const {id} = useLocalSearchParams();
+  const {data: user, error: userError, isLoading: userLoading} = useUser(id.toString());
+
+  if (user===undefined){ 
+    return <Text>用户不存在</Text>;
+  }
 
   const handleSend = () => {
     if (inputText.trim()) {
@@ -33,6 +41,9 @@ export default function ChatScreen() {
         content: inputText.trim(),
         isSender: true,
         timestamp: new Date(),
+        status: 'pending',
+        senderID: 1,
+        receiverID: user.id,
       };
       setMessages([...messages, newMessage]);
       setInputText('');
@@ -41,19 +52,19 @@ export default function ChatScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
-      >
         {/* Header */}
         <SafeAreaView style={styles.header}>
           <IconButton
             icon={props => <Icon name="arrow-left" {...props} />}
             onPress={() => router.back()}
           />
-          <Text style={styles.headerTitle}>用户名</Text>
+          <Image source={{ uri: user.avatar || DEFAULT_AVATAR }} style={styles.avatar} />
+          <Text style={styles.headerTitle}>{user.user_name}</Text>
         </SafeAreaView>
+      <KeyboardAvoidingView 
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
 
         {/* 聊天记录区域 */}
         <ScrollView
@@ -80,13 +91,14 @@ export default function ChatScreen() {
             onSubmitEditing={handleSend}
             placeholder="输入消息..."
             returnKeyType="send"
-            blurOnSubmit={true}
-            
           />
+          {/*
+          这部分是输入框的扩展功能，需要等到支持发送非文本类型时再添加
           <IconButton
             icon={props => <Icon name="plus" {...props} />}
             onPress={() => {console.log("plus")}}
           />
+          */}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -120,7 +132,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderTopWidth: 1,
     borderTopColor: '#e0e0e0',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
   },
   input: {
     flex: 1,
@@ -130,4 +142,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     borderRadius: 20,
   },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  }
 });

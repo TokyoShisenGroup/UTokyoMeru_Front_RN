@@ -9,7 +9,7 @@ import { useAuth } from '@/lib/context/AuthContext';
 
 const initialSettingsList = [
   { title: '个人信息', icon: 'person', onPress: () => console.log('个人信息') },
-  { title: '聊天', icon: 'chat', onPress: () => router.push("/chat") },
+  { title: '聊天', icon: 'chat', onPress: () => router.push({pathname: "/chat", params: {id: 2}}) },
 ];
 
 const SettingsList = () => {
