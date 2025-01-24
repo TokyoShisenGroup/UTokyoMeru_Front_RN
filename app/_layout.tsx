@@ -40,7 +40,7 @@ export default function RootLayout() {
           <Stack.Screen name="userpage/SaleList" options={{ headerShown: false }} />
           <Stack.Screen name="userpage/BoughtList" options={{ headerShown: false }} />
           <Stack.Screen name="userpage/SoldList" options={{ headerShown: false }} />
-          <Stack.Screen name="infopage/info" options={{ headerShown: false }} />
+          <Stack.Screen name="chat/index" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
           <Stack.Screen name="adminpage/AdminControl" options={{ headerShown: true }} />
         </Stack>

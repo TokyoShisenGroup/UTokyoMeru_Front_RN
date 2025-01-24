@@ -9,11 +9,7 @@ import { useAuth } from '@/lib/context/AuthContext';
 
 const initialSettingsList = [
   { title: '个人信息', icon: 'person', onPress: () => console.log('个人信息') },
-  { title: '账户安全', icon: 'lock', onPress: () => console.log('账户安全') },
-  { title: '隐私设置', icon: 'eye-off', onPress: () => console.log('隐私设置') },
-  { title: '通知管理', icon: 'notifications', onPress: () => console.log('通知管理') },
-  { title: '帮助中心', icon: 'help-circle', onPress: () => console.log('帮助中心') },
-  { title: '关于我们', icon: 'information-circle', onPress: () => console.log('关于我们') },
+  { title: '聊天', icon: 'chat', onPress: () => router.push("/chat") },
 ];
 
 const SettingsList = () => {
